@@ -59,7 +59,7 @@ public class Rectangle implements Shape {
     public boolean equals(Object o) {
         if (o == this) return true;
 
-        if (o == null || o.getClass() != getClass()) return false;
+        if (o == null || o.getClass() != getClass() || o.hashCode() != this.hashCode()) return false;
 
         Rectangle rectangle = (Rectangle) o;
 
