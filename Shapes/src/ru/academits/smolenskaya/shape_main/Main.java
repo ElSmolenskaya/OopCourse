@@ -17,7 +17,6 @@ public class Main {
         }
 
         ShapesAreaComparator shapesAreaComparator = new ShapesAreaComparator();
-
         Arrays.sort(shapes, shapesAreaComparator);
 
         return shapes[shapes.length - positionNumber];
@@ -29,7 +28,6 @@ public class Main {
         }
 
         ShapesPerimeterComparator shapesPerimeterComparator = new ShapesPerimeterComparator();
-
         Arrays.sort(shapes, shapesPerimeterComparator);
 
         return shapes[shapes.length - positionNumber];
@@ -53,11 +51,13 @@ public class Main {
         System.out.println();
 
         Shape maxAreaShape = getMaxAreaShape(shapes, 1);
+
         if (maxAreaShape != null) {
             System.out.println("Фигура с максимальной площадью - " + maxAreaShape);
         }
 
         Shape maxPerimeterShape = getMaxPerimeterShape(shapes, 2);
+
         if (maxPerimeterShape != null) {
             System.out.println("Фигура со вторым по величине периметром - " + maxPerimeterShape);
         }
