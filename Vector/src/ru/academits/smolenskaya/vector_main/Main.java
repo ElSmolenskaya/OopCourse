@@ -16,14 +16,14 @@ public class Main {
         vector3 = Vector.getSum(vector1, vector2);
         System.out.println("vector3 = vector1 + vector2 = " + vector3);
 
-        vector1.subtract(vector2);
+        vector1.getDifference(vector2);
         System.out.println("vector1 = vector1 - vector2 = " + vector1);
 
-        vector1.sum(vector2);
+        vector1.getSum(vector2);
         System.out.println("vector1 = vector1 + vector2 = " + vector1);
 
         double n = 2.3;
-        vector1.multiply(n);
+        vector1.getProduct(n);
         System.out.printf("vector1 = vector1 * %f = %s%n", n, vector1);
 
         vector1.reverse();
