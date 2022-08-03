@@ -8,15 +8,15 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Range lineSegment1 = new Range(0, 0);
-
         System.out.print("Введите начальное число для первого отрезка: ");
-        lineSegment1.setFrom(scanner.nextDouble());
+        double from = scanner.nextDouble();
 
         System.out.print("Введите конечное число для первого отрезка: ");
-        lineSegment1.setTo(scanner.nextDouble());
+        double to = scanner.nextDouble();
 
-        System.out.printf("Задан первый отрезок прямой от %fсм. до %fсм.%n", lineSegment1.getFrom(), lineSegment1.getTo());
+        Range lineSegment1 = new Range(from, to);
+
+        System.out.println("Задан первый отрезок прямой: " + lineSegment1);
         System.out.printf("Длина первого отрезка равна %fсм.%n", lineSegment1.getLength());
 
         System.out.print("Введите число: ");
@@ -30,46 +30,42 @@ public class Main {
 
         System.out.println();
 
-        Range lineSegment2 = new Range(0, 0);
-
         System.out.print("Введите начальное число для второго отрезка: ");
-        lineSegment2.setFrom(scanner.nextDouble());
+        from = scanner.nextDouble();
 
         System.out.print("Введите конечное число для второго отрезка: ");
-        lineSegment2.setTo(scanner.nextDouble());
+        to = scanner.nextDouble();
 
-        System.out.printf("Задан второй отрезок прямой от %fсм. до %fсм.%n", lineSegment2.getFrom(), lineSegment2.getTo());
+        Range lineSegment2 = new Range(from, to);
+
+        System.out.println("Задан второй отрезок прямой: " + lineSegment2);
         System.out.printf("Длина второго отрезка равна %fсм.%n%n", lineSegment2.getLength());
 
-        Range intersectionLineSegment = lineSegment1.intersection(lineSegment2);
+        Range intersectionLineSegment = lineSegment1.getIntersection(lineSegment2);
 
         if (intersectionLineSegment == null) {
             System.out.println("Данные отрезки не пересекаются");
         } else {
-            System.out.printf("Интервал-пересечение двух отрезков лежит в пределах от %fсм. до %fсм.%n",
-                    intersectionLineSegment.getFrom(), intersectionLineSegment.getTo());
+            System.out.println("Интервал-пересечение двух отрезков: " + intersectionLineSegment);
             System.out.printf("Длина пересечения двух отрезков равна %fсм.%n%n", intersectionLineSegment.getLength());
         }
 
-        Range[] unionLineSegment = lineSegment1.union(lineSegment2);
+        Range[] unionLineSegment = lineSegment1.getUnion(lineSegment2);
 
         for (Range lineSegment : unionLineSegment) {
-            System.out.printf("Интервал-объединение двух отрезков лежит в пределах от %fсм. до %fсм.%n",
-                    lineSegment.getFrom(), lineSegment.getTo());
+            System.out.println("Интервал-объединение двух отрезков: " + lineSegment);
             System.out.printf("Длина объединения двух отрезков равна %fсм.%n", lineSegment.getLength());
         }
 
         System.out.println();
 
-        Range[] differenceLineSegment = lineSegment1.difference(lineSegment2);
+        Range[] differenceLineSegment = lineSegment1.getDifference(lineSegment2);
 
-        if (differenceLineSegment == null) {
-            System.out.println("Разность первого и второго отрезков (первый - второй) отсутствует");
+        if (differenceLineSegment.length == 0) {
+            System.out.println("Разность первого и второго отрезков отсутствует");
         } else {
-
             for (Range lineSegment : differenceLineSegment) {
-                System.out.printf("Разность первого и второго отрезков (первый - второй) лежит в пределах от %fсм. до %fсм.%n",
-                        lineSegment.getFrom(), lineSegment.getTo());
+                System.out.println("Разность первого и второго отрезков: " + lineSegment);
                 System.out.printf("Длина разности первого и второго отрезков равна %fсм.%n", lineSegment.getLength());
             }
         }
