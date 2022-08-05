@@ -16,8 +16,7 @@ public class Main {
             return null;
         }
 
-        ShapesAreaComparator shapesAreaComparator = new ShapesAreaComparator();
-        Arrays.sort(shapes, shapesAreaComparator);
+        Arrays.sort(shapes, new ShapesAreaComparator());
 
         return shapes[shapes.length - positionNumber];
     }
@@ -27,14 +26,14 @@ public class Main {
             return null;
         }
 
-        ShapesPerimeterComparator shapesPerimeterComparator = new ShapesPerimeterComparator();
-        Arrays.sort(shapes, shapesPerimeterComparator);
+        Arrays.sort(shapes, new ShapesPerimeterComparator());
 
         return shapes[shapes.length - positionNumber];
     }
 
     public static void main(String[] args) {
-        Shape[] shapes = new Shape[]{new Square(5.2),
+        Shape[] shapes = {
+                new Square(5.2),
                 new Square(9.7),
                 new Rectangle(3, 4.8),
                 new Rectangle(5, 6),
