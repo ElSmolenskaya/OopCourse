@@ -1,6 +1,6 @@
-package ru.academits.smolenskaya.shapesAreaComparator;
+package ru.academits.smolenskaya.shapes_comparators;
 
-import ru.academits.smolenskaya.shape.Shape;
+import ru.academits.smolenskaya.shapes.Shape;
 
 import java.util.Comparator;
 

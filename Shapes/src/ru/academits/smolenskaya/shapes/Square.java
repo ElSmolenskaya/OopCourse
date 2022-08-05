@@ -1,6 +1,4 @@
-package ru.academits.smolenskaya.square;
-
-import ru.academits.smolenskaya.shape.Shape;
+package ru.academits.smolenskaya.shapes;
 
 public class Square implements Shape {
     private double sideLength;

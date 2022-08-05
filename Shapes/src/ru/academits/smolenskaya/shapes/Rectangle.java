@@ -1,6 +1,4 @@
-package ru.academits.smolenskaya.rectangle;
-
-import ru.academits.smolenskaya.shape.Shape;
+package ru.academits.smolenskaya.shapes;
 
 public class Rectangle implements Shape {
     private double width;

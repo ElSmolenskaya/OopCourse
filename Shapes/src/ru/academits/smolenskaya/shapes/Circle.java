@@ -1,6 +1,4 @@
-package ru.academits.smolenskaya.circle;
-
-import ru.academits.smolenskaya.shape.Shape;
+package ru.academits.smolenskaya.shapes;
 
 public class Circle implements Shape {
     private double radius;

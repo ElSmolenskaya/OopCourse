@@ -1,12 +1,12 @@
-package ru.academits.smolenskaya.shape_main;
+package ru.academits.smolenskaya.shapes_main;
 
-import ru.academits.smolenskaya.circle.Circle;
-import ru.academits.smolenskaya.rectangle.Rectangle;
-import ru.academits.smolenskaya.shape.Shape;
-import ru.academits.smolenskaya.shapesAreaComparator.ShapesAreaComparator;
-import ru.academits.smolenskaya.shapesPerimeterComparator.ShapesPerimeterComparator;
-import ru.academits.smolenskaya.square.Square;
-import ru.academits.smolenskaya.triangle.Triangle;
+import ru.academits.smolenskaya.shapes.Circle;
+import ru.academits.smolenskaya.shapes.Rectangle;
+import ru.academits.smolenskaya.shapes.Shape;
+import ru.academits.smolenskaya.shapes_comparators.ShapesAreaComparator;
+import ru.academits.smolenskaya.shapes_comparators.ShapesPerimeterComparator;
+import ru.academits.smolenskaya.shapes.Square;
+import ru.academits.smolenskaya.shapes.Triangle;
 
 import java.util.Arrays;
 

@@ -1,6 +1,4 @@
-package ru.academits.smolenskaya.triangle;
-
-import ru.academits.smolenskaya.shape.Shape;
+package ru.academits.smolenskaya.shapes;
 
 public class Triangle implements Shape {
     private double x1;

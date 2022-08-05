@@ -1,4 +1,4 @@
-package ru.academits.smolenskaya.shape;
+package ru.academits.smolenskaya.shapes;
 
 public interface Shape {
     double getWidth();
