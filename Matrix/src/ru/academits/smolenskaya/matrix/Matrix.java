@@ -5,7 +5,7 @@ import ru.academits.smolenskaya.vector.Vector;
 public class Matrix {
     public Vector[] vectors;
 
-    public Matrix(int n, int m) {
+    public Matrix(int m, int n) {
         vectors = new Vector[m];
 
         for (int i = 0; i < m; i++) {
@@ -25,7 +25,7 @@ public class Matrix {
         this.vectors = new Vector[components.length];
 
         for (int i = 0; i < components.length; i++) {
-            this.vectors[i] = new Vector( components[i]);
+            this.vectors[i] = new Vector(components[i]);
         }
     }
 
@@ -36,4 +36,17 @@ public class Matrix {
             this.vectors[i] = new Vector(vectors[i]);
         }
     }
+
+    public int[] getSize() {
+        return new int[]{vectors.length, vectors[0].getSize()};
+    }
+
+    public Vector getVector(int index){
+        if (index < 0 || index >= vectors.length) {
+            throw new IllegalArgumentException("index must be >= 0 and index must be < " + vectors.length);
+        }
+
+        return vectors[index];
+    }
+
 }

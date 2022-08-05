@@ -13,21 +13,16 @@ public class Main {
 
         Matrix matrix = new Matrix(vectors);
 
-        for (Vector vector : matrix.vectors) {
-            System.out.println(vector);
-        }
-
         Matrix matrix1 = new Matrix(matrix);
-
-        for (Vector vector : matrix1.vectors) {
-            System.out.println(vector);
-        }
 
         Matrix matrix2 = new Matrix(new double[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
 
-        for (Vector vector : matrix2.vectors) {
+        Matrix matrix3 = new Matrix(4,6);
+
+        for (Vector vector : matrix3.vectors) {
             System.out.println(vector);
         }
+
 
 
     }

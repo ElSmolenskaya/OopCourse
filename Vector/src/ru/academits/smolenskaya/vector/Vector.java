@@ -116,7 +116,7 @@ public class Vector {
 
     public double getComponent(int index) {
         if (index < 0 || index >= components.length) {
-            throw new IllegalArgumentException("index must be >= 0 and index must be <= " + components.length);
+            throw new IllegalArgumentException("index must be >= 0 and index must be < " + components.length);
         }
 
         return components[index];
@@ -124,7 +124,7 @@ public class Vector {
 
     public void setComponent(int index, double component) {
         if (index < 0 || index >= components.length) {
-            throw new IllegalArgumentException("index must be >= 0 and index must be <= " + components.length);
+            throw new IllegalArgumentException("index must be >= 0 and index must be < " + components.length);
         }
 
         components[index] = component;
