@@ -146,7 +146,7 @@ public class Vector {
     public boolean equals(Object o) {
         if (o == this) return true;
 
-        if (o == null || o.getClass() != getClass() || o.hashCode() != hashCode()) {
+        if (o == null || o.getClass() != getClass()) {
             return false;
         }
 
