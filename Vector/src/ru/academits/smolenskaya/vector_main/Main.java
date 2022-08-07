@@ -33,12 +33,20 @@ public class Main {
 
         System.out.println("vector1.length = " + vector1.getLength());
 
-        System.out.println("vector1.equals(vector2) = " + vector1.equals(vector2));
+        if (vector1.hashCode() != vector2.hashCode()) {
+            System.out.println("vector1.equals(vector2) = false");
+        } else {
+            System.out.println("vector1.equals(vector2) = " + vector1.equals(vector2));
+        }
 
         Vector vector4 = new Vector(vector1);
         System.out.println("vector4 = " + vector4);
 
-        System.out.println("vector1.equals(vector4) = " + vector1.equals(vector4));
+        if (vector1.hashCode() != vector4.hashCode()) {
+            System.out.println("vector1.equals(vector4) = false");
+        } else {
+            System.out.println("vector1.equals(vector4) = " + vector1.equals(vector4));
+        }
 
         Vector vector5 = new Vector(new double[]{1, 3, 4});
         System.out.println("vector5 = " + vector5);

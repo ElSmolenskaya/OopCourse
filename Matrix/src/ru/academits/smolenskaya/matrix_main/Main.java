@@ -19,14 +19,15 @@ public class Main {
 
         Matrix matrix3 = new Matrix(4, 6);
 
-        matrix.getTransposition();
+        matrix.transpose();
 
-        matrix.getProduct(2);
+        matrix.multiply(2);
 
         for (Vector vector : matrix.vectors) {
             System.out.println(vector);
         }
 
-
+        Matrix matrix4 = new Matrix(new double[][]{{15,14,12}, {6,7,1}, {54,5,7}});
+        System.out.println("determinant = " + matrix4.getDeterminant());
     }
 }

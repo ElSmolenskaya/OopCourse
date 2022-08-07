@@ -14,10 +14,6 @@ public class Vector {
     }
 
     public Vector(Vector vector) {
-        if (vector.components.length == 0) {
-            throw new IllegalArgumentException("vector.components.length = 0: size must be > 0");
-        }
-
         components = Arrays.copyOf(vector.components, vector.components.length);
     }
 
