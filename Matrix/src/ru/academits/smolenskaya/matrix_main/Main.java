@@ -17,12 +17,15 @@ public class Main {
 
         Matrix matrix2 = new Matrix(new double[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
 
-        Matrix matrix3 = new Matrix(4,6);
+        Matrix matrix3 = new Matrix(4, 6);
 
-        for (Vector vector : matrix3.vectors) {
+        matrix.getTransposition();
+
+        matrix.getProduct(2);
+
+        for (Vector vector : matrix.vectors) {
             System.out.println(vector);
         }
-
 
 
     }

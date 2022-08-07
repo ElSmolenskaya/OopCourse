@@ -1,44 +1,40 @@
 package ru.academits.smolenskaya.vector;
 
+import java.util.Arrays;
+
 public class Vector {
     private double[] components;
 
-    public Vector(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException("n must be > 0");
+    public Vector(int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("size = " + size + ": size must be > 0");
         }
 
-        components = new double[n];
-
-        for (int i = 0; i < n; i++) {
-            components[i] = 0;
-        }
+        components = new double[size];
     }
 
     public Vector(Vector vector) {
-        components = new double[vector.components.length];
+        if (vector.components.length == 0) {
+            throw new IllegalArgumentException("vector.components.length = 0: size must be > 0");
+        }
 
-        System.arraycopy(vector.components, 0, components, 0, components.length);
+        components = Arrays.copyOf(vector.components, vector.components.length);
     }
 
     public Vector(double[] components) {
-        this.components = new double[components.length];
+        if (components.length == 0) {
+            throw new IllegalArgumentException("components.length = 0: size must be > 0");
+        }
 
-        System.arraycopy(components, 0, this.components, 0, components.length);
+        this.components = Arrays.copyOf(components, components.length);
     }
 
-    public Vector(int n, double[] components) {
-        this(n);
+    public Vector(int size, double[] components) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("size = " + size + ": size must be > 0");
+        }
 
-        System.arraycopy(components, 0, this.components, 0, Math.min(n, components.length));
-    }
-
-    public double[] getComponents() {
-        return components;
-    }
-
-    public void setComponents(double[] components) {
-        this.components = components;
+        this.components = Arrays.copyOf(components, size);
     }
 
     public int getSize() {
@@ -49,74 +45,60 @@ public class Vector {
     public String toString() {
         StringBuilder result = new StringBuilder("{");
 
-        if (components.length > 0) {
-            for (double component : components) {
-                result.append(component).append(", ");
-            }
-
-            result.delete(result.length() - 2, result.length());
+        for (double component : components) {
+            result.append(component).append(", ");
         }
+
+        result.delete(result.length() - 2, result.length());
 
         result.append("}");
 
         return result.toString();
     }
 
-    public void getSum(Vector vector) {
+    public void sum(Vector vector) {
         if (components.length < vector.getSize()) {
-            Vector resultVector = new Vector(vector.getSize(), components);
+            components = Arrays.copyOf(components, vector.getSize());
+        }
 
-            for (int i = 0; i < resultVector.getSize(); i++) {
-                resultVector.components[i] += vector.components[i];
-            }
-
-            components = resultVector.components;
-        } else {
-            for (int i = 0; i < vector.getSize(); i++) {
-                components[i] += vector.components[i];
-            }
+        for (int i = 0; i < vector.getSize(); i++) {
+            components[i] += vector.components[i];
         }
     }
 
-    public void getDifference(Vector vector) {
+    public void subtract(Vector vector) {
         if (components.length < vector.getSize()) {
-            Vector resultVector = new Vector(vector.getSize(), components);
+            components = Arrays.copyOf(components, vector.getSize());
+        }
 
-            for (int i = 0; i < resultVector.getSize(); i++) {
-                resultVector.components[i] -= vector.components[i];
-            }
-
-            components = resultVector.components;
-        } else {
-            for (int i = 0; i < vector.getSize(); i++) {
-                components[i] -= vector.components[i];
-            }
+        for (int i = 0; i < vector.getSize(); i++) {
+            components[i] -= vector.components[i];
         }
     }
 
-    public void getProduct(double n) {
+    public void multiply(double number) {
         for (int i = 0; i < components.length; i++) {
-            components[i] *= n;
+            components[i] *= number;
         }
     }
 
     public void reverse() {
-        getProduct(-1);
+        multiply(-1);
     }
 
     public double getLength() {
-        double result = 0;
+        double sum = 0;
 
         for (double component : components) {
-            result += component * component;
+            sum += component * component;
         }
 
-        return Math.sqrt(result);
+        return Math.sqrt(sum);
     }
 
     public double getComponent(int index) {
         if (index < 0 || index >= components.length) {
-            throw new IllegalArgumentException("index must be >= 0 and index must be < " + components.length);
+            throw new ArrayIndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + components.length);
         }
 
         return components[index];
@@ -124,7 +106,7 @@ public class Vector {
 
     public void setComponent(int index, double component) {
         if (index < 0 || index >= components.length) {
-            throw new IllegalArgumentException("index must be >= 0 and index must be < " + components.length);
+            throw new ArrayIndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + components.length);
         }
 
         components[index] = component;
@@ -166,35 +148,27 @@ public class Vector {
     }
 
     public static Vector getSum(Vector vector1, Vector vector2) {
-        int size = Math.max(vector1.getSize(), vector2.getSize());
+        Vector resultVector = new Vector(Math.max(vector1.getSize(), vector2.getSize()), vector1.components);
 
-        if (size == 0) {
-            return new Vector(new double[]{});
-        }
-
-        Vector resultVector = new Vector(size, vector1.components);
-        resultVector.getSum(vector2);
+        resultVector.sum(vector2);
 
         return resultVector;
     }
 
     public static Vector getDifference(Vector vector1, Vector vector2) {
-        int size = Math.max(vector1.getSize(), vector2.getSize());
+        Vector resultVector = new Vector(Math.max(vector1.getSize(), vector2.getSize()), vector1.components);
 
-        if (size == 0) {
-            return new Vector(new double[]{});
-        }
-
-        Vector resultVector = new Vector(size, vector1.components);
-        resultVector.getDifference(vector2);
+        resultVector.subtract(vector2);
 
         return resultVector;
     }
 
     public static double getScalarProduct(Vector vector1, Vector vector2) {
+        int minSize = Math.min(vector1.getSize(), vector2.getSize());
+
         double result = 0;
 
-        for (int i = 0; i < Math.min(vector1.getSize(), vector2.getSize()); i++) {
+        for (int i = 0; i < minSize; i++) {
             result += vector1.components[i] * vector2.components[i];
         }
 
