@@ -53,21 +53,21 @@ public class Vector {
     }
 
     public void sum(Vector vector) {
-        if (components.length < vector.getSize()) {
-            components = Arrays.copyOf(components, vector.getSize());
+        if (components.length < vector.components.length) {
+            components = Arrays.copyOf(components, vector.components.length);
         }
 
-        for (int i = 0; i < vector.getSize(); i++) {
+        for (int i = 0; i < vector.components.length; i++) {
             components[i] += vector.components[i];
         }
     }
 
     public void subtract(Vector vector) {
-        if (components.length < vector.getSize()) {
-            components = Arrays.copyOf(components, vector.getSize());
+        if (components.length < vector.components.length) {
+            components = Arrays.copyOf(components, vector.components.length);
         }
 
-        for (int i = 0; i < vector.getSize(); i++) {
+        for (int i = 0; i < vector.components.length; i++) {
             components[i] -= vector.components[i];
         }
     }
@@ -94,7 +94,7 @@ public class Vector {
 
     public double getComponent(int index) {
         if (index < 0 || index >= components.length) {
-            throw new ArrayIndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + components.length);
+            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + components.length);
         }
 
         return components[index];
@@ -102,7 +102,7 @@ public class Vector {
 
     public void setComponent(int index, double component) {
         if (index < 0 || index >= components.length) {
-            throw new ArrayIndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + components.length);
+            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + components.length);
         }
 
         components[index] = component;
@@ -122,7 +122,9 @@ public class Vector {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
+        if (o == this) {
+            return true;
+        }
 
         if (o == null || o.getClass() != getClass()) {
             return false;
@@ -130,7 +132,7 @@ public class Vector {
 
         Vector vector = (Vector) o;
 
-        if (vector.getSize() != components.length) {
+        if (vector.components.length != components.length) {
             return false;
         }
 
