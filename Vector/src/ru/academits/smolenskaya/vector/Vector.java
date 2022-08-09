@@ -113,11 +113,7 @@ public class Vector {
         final int prime = 37;
         int hash = 1;
 
-        for (double component : components) {
-            hash = prime * hash + Double.hashCode(component);
-        }
-
-        return hash;
+        return prime * hash + Arrays.hashCode(components);
     }
 
     @Override
@@ -132,21 +128,11 @@ public class Vector {
 
         Vector vector = (Vector) o;
 
-        if (vector.components.length != components.length) {
-            return false;
-        }
-
-        for (int i = 0; i < components.length; i++) {
-            if (components[i] != vector.components[i]) {
-                return false;
-            }
-        }
-
-        return true;
+        return Arrays.equals(components, vector.components);
     }
 
     public static Vector getSum(Vector vector1, Vector vector2) {
-        Vector resultVector = new Vector(Math.max(vector1.getSize(), vector2.getSize()), vector1.components);
+        Vector resultVector = new Vector(Math.max(vector1.components.length, vector2.components.length), vector1.components);
 
         resultVector.sum(vector2);
 
@@ -154,7 +140,7 @@ public class Vector {
     }
 
     public static Vector getDifference(Vector vector1, Vector vector2) {
-        Vector resultVector = new Vector(Math.max(vector1.getSize(), vector2.getSize()), vector1.components);
+        Vector resultVector = new Vector(Math.max(vector1.components.length, vector2.components.length), vector1.components);
 
         resultVector.subtract(vector2);
 
@@ -162,7 +148,7 @@ public class Vector {
     }
 
     public static double getScalarProduct(Vector vector1, Vector vector2) {
-        int minSize = Math.min(vector1.getSize(), vector2.getSize());
+        int minSize = Math.min(vector1.components.length, vector2.components.length);
 
         double result = 0;
 
