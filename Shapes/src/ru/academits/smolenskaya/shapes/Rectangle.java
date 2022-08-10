@@ -55,9 +55,13 @@ public class Rectangle implements Shape {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
+        if (o == this) {
+            return true;
+        }
 
-        if (o == null || o.getClass() != getClass()) return false;
+        if (o == null || o.getClass() != getClass()) {
+            return false;
+        }
 
         Rectangle rectangle = (Rectangle) o;
 

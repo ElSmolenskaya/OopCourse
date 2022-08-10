@@ -39,7 +39,8 @@ public class Main {
                 new Rectangle(5, 6),
                 new Circle(7.3),
                 new Circle(4.5),
-                new Triangle(2, 2, 5, 5, 2, 8)};
+                new Triangle(2, 2, 5, 5, 2, 8)
+        };
 
         System.out.println("Задан массив фигур:");
 
@@ -55,10 +56,10 @@ public class Main {
             System.out.println("Фигура с максимальной площадью - " + maxAreaShape);
         }
 
-        Shape maxPerimeterShape = getMaxPerimeterShape(shapes, 2);
+        Shape secondLargestPerimeterShape = getMaxPerimeterShape(shapes, 2);
 
-        if (maxPerimeterShape != null) {
-            System.out.println("Фигура со вторым по величине периметром - " + maxPerimeterShape);
+        if (secondLargestPerimeterShape != null) {
+            System.out.println("Фигура со вторым по величине периметром - " + secondLargestPerimeterShape);
         }
     }
 }
