@@ -1,7 +1,7 @@
 package ru.academits.smolenskaya.matrix_main;
 
-import ru.academits.smolenskaya.vector.Vector;
 import ru.academits.smolenskaya.matrix.Matrix;
+import ru.academits.smolenskaya.vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,14 +17,14 @@ public class Main {
         System.out.printf("matrix1: rows count = %d, columns count = %d%n", matrix1.getRowsCount(), matrix1.getColumnsCount());
 
         int rowNumber = 2;
-        System.out.printf("matrix1, row %d = %s%n", rowNumber, matrix1.getRowVector(rowNumber));
+        System.out.printf("matrix1: row %d = %s%n", rowNumber, matrix1.getRow(rowNumber));
 
         Vector vector1 = new Vector(new double[]{5, 5, 5, 5, 5});
-        matrix1.setRowVector(rowNumber, vector1);
+        matrix1.setRow(rowNumber, vector1);
         System.out.printf("matrix1: (changed row %d = %s) = %s%n", rowNumber, vector1, matrix1);
 
         int columnNumber = 1;
-        System.out.printf("matrix1, column %d = %s%n", columnNumber, matrix1.getColumnVector(columnNumber));
+        System.out.printf("matrix1: column %d = %s%n", columnNumber, matrix1.getColumn(columnNumber));
 
         matrix1.transpose();
         System.out.println("Transposed matrix1 = " + matrix1);
@@ -35,14 +35,14 @@ public class Main {
 
         System.out.println();
 
-        Matrix matrix2 = new Matrix(new double[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
+        Matrix matrix2 = new Matrix(new double[][]{{1, 2}, {4}, {7, 8, 9}});
         System.out.println("matrix2 = " + matrix2);
 
         Vector vector2 = new Vector(new double[]{2, 1, 2});
         System.out.println("vector2 = " + vector2);
 
-        matrix2.multiply(vector2);
-        System.out.println("Matrix2 * vector2 = " + matrix2);
+        Vector vector3 = matrix2.multiply(vector2);
+        System.out.println("Matrix2 * vector2 = " + vector3);
 
         System.out.println();
 
@@ -64,7 +64,7 @@ public class Main {
 
         System.out.println();
 
-        matrix3.sum(matrix4);
+        matrix3.add(matrix4);
         System.out.println("matrix3 = matrix3 + matrix4 = " + matrix3);
 
         matrix3.subtract(matrix4);
