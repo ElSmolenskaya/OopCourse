@@ -21,31 +21,44 @@ public class Main {
 
         System.out.println("firstItemData = " + integerList.getFirstItemData());
 
+        System.out.println();
+
         int oldData = integerList.setData(0, 30);
         System.out.println(integerList);
 
         System.out.println("oldData = " + oldData);
 
+        System.out.println();
+
         int deletedData = integerList.deleteItem(integerList.getSize() - 1);
         System.out.println(integerList);
         System.out.println("deletedData = " + deletedData);
 
+        System.out.println();
+
         integerList.insertItem(1, 50);
         System.out.println(integerList);
+
+        System.out.println();
 
         Integer data = 2;
 
         System.out.println("isDeleted = " + integerList.deleteItem(data));
         System.out.println(integerList);
 
+        System.out.println();
+
         deletedData = integerList.deleteHeadItem();
 
         System.out.println(integerList);
         System.out.println("deletedData = " + deletedData);
 
-        integerList.reverse();
+        System.out.println();
 
-        System.out.println(integerList);
+        integerList.reverse();
+        System.out.println("reversed array = " + integerList);
+
+        System.out.println();
 
         List<Integer> integerListCopy = integerList.getCopy();
         System.out.println("copy = " + integerListCopy);
