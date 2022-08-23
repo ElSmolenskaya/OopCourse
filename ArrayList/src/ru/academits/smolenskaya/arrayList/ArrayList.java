@@ -159,7 +159,7 @@ public class ArrayList<E> implements List<E> {
                 System.arraycopy(items, i + 1, items, i, length - i - 1);
 
                 --length;
-                --modCount;
+                ++modCount;
 
                 return true;
             }
@@ -263,7 +263,7 @@ public class ArrayList<E> implements List<E> {
             items[i] = null;
         }
 
-        modCount = length;
+        modCount += length;
         length = 0;
     }
 
@@ -325,7 +325,7 @@ public class ArrayList<E> implements List<E> {
         System.arraycopy(items, index + 1, items, index, length - index - 1);
 
         --length;
-        --modCount;
+        ++modCount;
 
         return oldElement;
     }
