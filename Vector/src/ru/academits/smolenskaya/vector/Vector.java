@@ -52,7 +52,7 @@ public class Vector {
         return result.toString();
     }
 
-    public void sum(Vector vector) {
+    public void add(Vector vector) {
         if (components.length < vector.components.length) {
             components = Arrays.copyOf(components, vector.components.length);
         }
@@ -134,7 +134,7 @@ public class Vector {
     public static Vector getSum(Vector vector1, Vector vector2) {
         Vector resultVector = new Vector(Math.max(vector1.components.length, vector2.components.length), vector1.components);
 
-        resultVector.sum(vector2);
+        resultVector.add(vector2);
 
         return resultVector;
     }

@@ -19,7 +19,7 @@ public class Main {
         vector1.subtract(vector2);
         System.out.println("vector1 = vector1 - vector2 = " + vector1);
 
-        vector1.sum(vector2);
+        vector1.add(vector2);
         System.out.println("vector1 = vector1 + vector2 = " + vector1);
 
         double n = 2.3;
