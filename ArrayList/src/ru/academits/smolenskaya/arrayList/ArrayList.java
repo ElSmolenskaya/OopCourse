@@ -4,7 +4,7 @@ import java.util.*;
 
 public class ArrayList<E> implements List<E> {
     private E[] items;
-    private int length;
+    private int size;
     private int capacity;
     private int modCount;
 
@@ -28,7 +28,7 @@ public class ArrayList<E> implements List<E> {
         }
 
         public boolean hasNext() {
-            return currentIndex + 1 < length;
+            return currentIndex + 1 < size;
         }
 
         public E next() {
@@ -38,7 +38,7 @@ public class ArrayList<E> implements List<E> {
 
             ++currentIndex;
 
-            if (currentIndex >= length) {
+            if (currentIndex >= size) {
                 throw new NoSuchElementException("The collection is over");
             }
 
@@ -60,28 +60,28 @@ public class ArrayList<E> implements List<E> {
     }
 
     public void trimToSize(int size) {
-        if (size < 1) {
-            throw new IllegalArgumentException("size = " + size + " : size must be > 0");
+        if (size < 0) {
+            throw new IllegalArgumentException("size = " + size + " : size must be >= 0");
         }
 
-        if (size < length) {
-            for (int i = size; i < length; i++) {
+        if (size < this.size) {
+            for (int i = size; i < this.size; i++) {
                 items[i] = null;
             }
 
-            modCount += length - size;
-            length = size;
+            modCount += this.size - size;
+            this.size = size;
         }
     }
 
     @Override
     public int size() {
-        return length;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return length == 0;
+        return size == 0;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ArrayList<E> implements List<E> {
             throw new IllegalArgumentException("o = null: collection does not contain null elements");
         }
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < size; i++) {
             if (items[i].equals(o)) {
                 return true;
             }
@@ -101,28 +101,28 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public Object[] toArray() {
-        return Arrays.copyOf(items, length);
+        return Arrays.copyOf(items, size);
     }
 
-    private static <E> void toArrayHelper(E[] array1, E[] array2, int length) {
-        System.arraycopy(array1, 0, array2, 0, length);
+    private static <E> void toArrayHelper(E[] array1, E[] array2, int size) {
+        System.arraycopy(array1, 0, array2, 0, size);
     }
 
     @Override
     public <E1> E1[] toArray(E1[] array) {
-        if (array.length < length) {
+        if (array.length < size) {
             //noinspection unchecked
-            E1[] copyArray = (E1[]) new Object[length];
+            E1[] copyArray = (E1[]) new Object[size];
 
-            toArrayHelper(items, copyArray, length);
+            toArrayHelper(items, copyArray, size);
 
             return copyArray;
         }
 
-        toArrayHelper(items, array, length);
+        toArrayHelper(items, array, size);
 
-        if (length < array.length) {
-            array[length] = null;
+        if (size < array.length) {
+            array[size] = null;
         }
 
         return array;
@@ -136,13 +136,13 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public boolean add(E element) {
-        if (length >= capacity) {
+        if (size >= capacity) {
             increaseCapacity();
         }
 
-        items[length] = element;
+        items[size] = element;
 
-        ++length;
+        ++size;
         ++modCount;
 
         return true;
@@ -154,11 +154,11 @@ public class ArrayList<E> implements List<E> {
             throw new IllegalArgumentException("o = null: collection does not contain null elements");
         }
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < size; i++) {
             if (items[i].equals(o)) {
-                System.arraycopy(items, i + 1, items, i, length - i - 1);
+                System.arraycopy(items, i + 1, items, i, size - i - 1);
 
-                --length;
+                --size;
                 ++modCount;
 
                 return true;
@@ -171,7 +171,7 @@ public class ArrayList<E> implements List<E> {
     @Override
     public boolean containsAll(Collection<?> c) {
         if (c.size() == 0) {
-            throw new IllegalArgumentException("The collection sent is empty");
+            throw new IllegalArgumentException("Collection c is empty");
         }
 
         for (Object element : c) {
@@ -186,7 +186,7 @@ public class ArrayList<E> implements List<E> {
     @Override
     public boolean addAll(Collection<? extends E> c) {
         if (c.size() == 0) {
-            throw new IllegalArgumentException("The collection sent is empty");
+            throw new IllegalArgumentException("Collection c is empty");
         }
 
         for (E element : c) {
@@ -202,22 +202,26 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-        if (c.size() == 0) {
-            throw new IllegalArgumentException("The collection sent is empty");
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and <= " + size);
         }
 
-        int newSize = length + c.size();
+        if (c.size() == 0) {
+            throw new IllegalArgumentException("Collection c is empty");
+        }
+
+        int newSize = size + c.size();
 
         while (newSize > capacity) {
             increaseCapacity();
         }
 
-        System.arraycopy(items, index, items, index + c.size(), length - index);
+        System.arraycopy(items, index, items, index + c.size(), size - index);
 
         addAllHelper(items, index, c.toArray());
 
         modCount += c.size();
-        length += c.size();
+        size += c.size();
 
         return true;
     }
@@ -225,7 +229,7 @@ public class ArrayList<E> implements List<E> {
     @Override
     public boolean removeAll(Collection<?> c) {
         if (c.size() == 0) {
-            throw new IllegalArgumentException("The collection sent is empty");
+            throw new IllegalArgumentException("Collection c is empty");
         }
 
         boolean result = false;
@@ -244,7 +248,7 @@ public class ArrayList<E> implements List<E> {
         int i = 0;
         boolean isChanged = false;
 
-        while (i < length) {
+        while (i < size) {
             if (!c.contains(items[i])) {
                 remove(i);
 
@@ -259,32 +263,38 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public void clear() {
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < size; i++) {
             items[i] = null;
         }
 
-        modCount += length;
-        length = 0;
+        modCount += size;
+        size = 0;
+    }
+
+    private void checkIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + size);
+        }
+    }
+
+    private void checkElement(Object element) {
+        if (element == null) {
+            throw new IllegalArgumentException("element = null: collection must not contain null elements");
+        }
     }
 
     @Override
     public E get(int index) {
-        if (index < 0 || index >= length) {
-            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + length);
-        }
+        checkIndex(index);
 
         return items[index];
     }
 
     @Override
     public E set(int index, E element) {
-        if (index < 0 || index >= length) {
-            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + length);
-        }
+        checkIndex(index);
 
-        if (element == null) {
-            throw new IllegalArgumentException("element = null: collection must not contain null elements");
-        }
+        checkElement(element);
 
         E oldElement = items[index];
         items[index] = element;
@@ -294,37 +304,37 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public void add(int index, E element) {
-        if (index < 0 || index >= length) {
-            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + length);
+        if (index == size) {
+            add(element);
+
+            return;
         }
 
-        if (element == null) {
-            throw new IllegalArgumentException("element = null: collection must not contain null elements");
-        }
+        checkIndex(index);
 
-        if (length >= capacity) {
+        checkElement(element);
+
+        if (size >= capacity) {
             increaseCapacity();
         }
 
-        System.arraycopy(items, index, items, index + 1, length - index);
+        System.arraycopy(items, index, items, index + 1, size - index);
 
         items[index] = element;
 
-        ++length;
+        ++size;
         ++modCount;
     }
 
     @Override
     public E remove(int index) {
-        if (index < 0 || index >= length) {
-            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + length);
-        }
+        checkIndex(index);
 
         E oldElement = items[index];
 
-        System.arraycopy(items, index + 1, items, index, length - index - 1);
+        System.arraycopy(items, index + 1, items, index, size - index - 1);
 
-        --length;
+        --size;
         ++modCount;
 
         return oldElement;
@@ -332,11 +342,9 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public int indexOf(Object o) {
-        if (o == null) {
-            throw new IllegalArgumentException("o = null: collection does not contain null elements");
-        }
+        checkElement(o);
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < size; i++) {
             if (items[i] == o) {
                 return i;
             }
@@ -347,11 +355,9 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public int lastIndexOf(Object o) {
-        if (o == null) {
-            throw new IllegalArgumentException("o = null: collection does not contain null elements");
-        }
+        checkElement(o);
 
-        for (int i = length - 1; i >= 0; i--) {
+        for (int i = size - 1; i >= 0; i--) {
             if (items[i] == o) {
                 return i;
             }
@@ -362,17 +368,21 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder("[");
-
-        for (int i = 0; i < length; i++) {
-            result.append(items[i]).append(", ");
+        if (size == 0) {
+            return "[]";
         }
 
-        result.delete(result.length() - 2, result.length());
+        StringBuilder stringBuilder = new StringBuilder("[");
 
-        result.append("]");
+        for (int i = 0; i < size; i++) {
+            stringBuilder.append(items[i]).append(", ");
+        }
 
-        return result.toString();
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 
     @Override

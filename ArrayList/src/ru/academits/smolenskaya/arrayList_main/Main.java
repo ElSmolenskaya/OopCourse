@@ -31,7 +31,7 @@ public class Main {
         arrayList.addAll(List.of(12, 13, 14));
         System.out.println("arrayList = " + arrayList);
 
-        index = 0;
+        index = arrayList.size();
 
         arrayList.addAll(index, List.of(15, 16, 17));
         System.out.println("arrayList = " + arrayList);

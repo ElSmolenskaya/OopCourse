@@ -9,46 +9,46 @@ public class Main {
         int size = 20;
 
         for (int i = 1; i <= size; i++) {
-            integerList.insertHeadItem(i);
+            integerList.insertFirst(i);
         }
 
         System.out.println(integerList);
 
         int index = 4;
-        System.out.printf("getData(%d) = %s%n", index, integerList.getData(index));
+        System.out.printf("getData(%d) = %s%n", index, integerList.get(index));
 
         System.out.println("size = " + integerList.getSize());
 
-        System.out.println("firstItemData = " + integerList.getFirstItemData());
+        System.out.println("firstItemData = " + integerList.getFirst());
 
         System.out.println();
 
-        int oldData = integerList.setData(0, 30);
+        int oldData = integerList.set(0, 30);
         System.out.println(integerList);
 
         System.out.println("oldData = " + oldData);
 
         System.out.println();
 
-        int deletedData = integerList.deleteItem(integerList.getSize() - 1);
+        int deletedData = integerList.deleteByIndex(integerList.getSize() - 1);
         System.out.println(integerList);
         System.out.println("deletedData = " + deletedData);
 
         System.out.println();
 
-        integerList.insertItem(1, 50);
+        integerList.insert(1, 50);
         System.out.println(integerList);
 
         System.out.println();
 
         Integer data = 2;
 
-        System.out.println("isDeleted = " + integerList.deleteItem(data));
+        System.out.println("isDeleted = " + integerList.deleteByValue(data));
         System.out.println(integerList);
 
         System.out.println();
 
-        deletedData = integerList.deleteHeadItem();
+        deletedData = integerList.deleteFirst();
 
         System.out.println(integerList);
         System.out.println("deletedData = " + deletedData);
@@ -62,5 +62,8 @@ public class Main {
 
         List<Integer> integerListCopy = integerList.getCopy();
         System.out.println("copy = " + integerListCopy);
+
+        integerList.insert(integerList.getSize(), 333);
+        System.out.println(integerList);
     }
 }

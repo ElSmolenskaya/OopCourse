@@ -1,140 +1,118 @@
 package ru.academits.smolenskaya.list;
 
+import java.util.NoSuchElementException;
+
 public class List<T> {
     private ListItem<T> head;
-    private int count;
+    private int size;
 
     public int getSize() {
-        return count;
+        return size;
     }
 
-    public T getFirstItemData() {
+    public T getFirst() {
         if (head == null) {
-            throw new NullPointerException("head is null");
+            throw new NoSuchElementException("The list is empty");
         }
 
         return head.getData();
     }
 
-    public T getData(int index) {
-        if (head == null) {
-            throw new NullPointerException("head is null");
+    private void checkIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + size);
         }
-
-        if (index < 0 || index >= count) {
-            throw new IllegalArgumentException("index = " + index + ": index must be > 0 and < " + count);
-        }
-
-        ListItem<T> listItem = head;
-
-        for (int i = 1; i <= index; i++) {
-            listItem = listItem.getNext();
-        }
-
-        return listItem.getData();
     }
 
-    public T setData(int index, T data) {
-        if (head == null) {
-            throw new NullPointerException("head is null");
-        }
-
-        if (index < 0 || index >= count) {
-            throw new IllegalArgumentException("index = " + index + ": index must be > 0 and < " + count);
-        }
-
-        ListItem<T> listItem = head;
+    private ListItem<T> getItem(int index) {
+        ListItem<T> item = head;
 
         for (int i = 1; i <= index; i++) {
-            listItem = listItem.getNext();
+            item = item.getNext();
         }
 
-        T oldData = listItem.getData();
+        return item;
+    }
 
-        listItem.setData(data);
+    public T get(int index) {
+        checkIndex(index);
+
+        return getItem(index).getData();
+    }
+
+    public T set(int index, T data) {
+        checkIndex(index);
+
+        ListItem<T> item = getItem(index);
+
+        T oldData = item.getData();
+
+        item.setData(data);
 
         return oldData;
     }
 
-    public T deleteItem(int index) {
-        if (head == null) {
-            throw new NullPointerException("head is null");
-        }
-
-        if (index < 0 || index >= count) {
-            throw new IllegalArgumentException("index = " + index + ": index must be > 0 and < " + count);
-        }
-
-        ListItem<T> listItem = head;
+    public T deleteByIndex(int index) {
+        checkIndex(index);
 
         if (index == 0) {
-            head = head.getNext();
-            count--;
-
-            return listItem.getData();
+            return deleteFirst();
         }
 
-        for (int i = 1; i < index; i++) {
-            listItem = listItem.getNext();
-        }
+        ListItem<T> item = getItem(index - 1);
 
-        T oldData = listItem.getNext().getData();
+        T deletedData = item.getNext().getData();
 
-        listItem.setNext(listItem.getNext().getNext());
+        item.setNext(item.getNext().getNext());
 
-        count--;
+        size--;
 
-        return oldData;
+        return deletedData;
     }
 
-    public void insertHeadItem(T data) {
-        ListItem<T> listItem = new ListItem<>(data);
+    public void insertFirst(T data) {
+        head = new ListItem<>(data, head);
 
-        listItem.setNext(head);
-
-        head = listItem;
-        count++;
+        size++;
     }
 
-    public void insertItem(int index, T data) {
-        if (head == null) {
-            throw new NullPointerException("head is null");
-        }
-
-        if (index < 0 || index >= count) {
-            throw new IllegalArgumentException("index = " + index + ": index must be > 0 and < " + count);
-        }
-
+    public void insert(int index, T data) {
         if (index == 0) {
-            insertHeadItem(data);
+            insertFirst(data);
 
             return;
         }
 
-        ListItem<T> prevListItem = head;
+        if (index == size) {
+            ListItem<T> lastItem = getItem(size - 1);
+            lastItem.setNext(new ListItem<>(data));
 
-        for (int i = 1; i < index; i++) {
-            prevListItem = prevListItem.getNext();
+            size++;
+
+            return;
         }
 
-        ListItem<T> listItem = new ListItem<>(data);
+        checkIndex(index);
 
-        listItem.setNext(prevListItem.getNext());
-        prevListItem.setNext(listItem);
+        ListItem<T> previousItem = getItem(index - 1);
 
-        count++;
+        ListItem<T> listItem = new ListItem<>(data, previousItem.getNext());
+
+        previousItem.setNext(listItem);
+
+        size++;
     }
 
-    public boolean deleteItem(T data) {
-        for (ListItem<T> listItem = head, prevListItem = null; listItem != null; prevListItem = listItem, listItem = listItem.getNext()) {
-            if (listItem.getData() == data) {
-                if (prevListItem == null) {
-                    head = listItem.getNext();
+    public boolean deleteByValue(T data) {
+        for (ListItem<T> item = head, previousItem = null; item != null; previousItem = item, item = item.getNext()) {
+            if (item.getData().equals(data)) {
+                if (previousItem == null) {
+                    head = item.getNext();
                 } else {
-                    prevListItem.setNext(listItem.getNext());
+                    previousItem.setNext(item.getNext());
                 }
 
-                count--;
+                size--;
 
                 return true;
             }
@@ -143,59 +121,65 @@ public class List<T> {
         return false;
     }
 
-    public T deleteHeadItem() {
+    public T deleteFirst() {
         if (head == null) {
-            throw new NullPointerException("head is null");
+            throw new NoSuchElementException("The list is empty");
         }
 
-        T headData = head.getData();
+        T deletedData = head.getData();
 
         head = head.getNext();
 
-        return headData;
+        size--;
+
+        return deletedData;
     }
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder("[");
-
-        if (head != null) {
-            for (ListItem<T> listItem = head; listItem != null; listItem = listItem.getNext()) {
-                result.append(listItem.getData()).append(", ");
-            }
-
-            result.delete(result.length() - 2, result.length());
+        if (head == null) {
+            return "[]";
         }
 
-        result.append("]");
+        StringBuilder stringBuilder = new StringBuilder("[");
 
-        return result.toString();
+        for (ListItem<T> item = head; item != null; item = item.getNext()) {
+            stringBuilder.append(item.getData()).append(", ");
+        }
+
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 
     public void reverse() {
-        if (count > 1) {
-            ListItem<T> listItem = head;
-            ListItem<T> prevListItem = null;
-            ListItem<T> nextListItem = head.getNext();
-
-            while (nextListItem != null) {
-                listItem.setNext(prevListItem);
-
-                prevListItem = listItem;
-                listItem = nextListItem;
-                nextListItem = listItem.getNext();
-            }
-
-            listItem.setNext(prevListItem);
-            head = listItem;
+        if (size <= 1) {
+            return;
         }
+
+        ListItem<T> item = head;
+        ListItem<T> previousItem = null;
+        ListItem<T> nextItem = head.getNext();
+
+        while (nextItem != null) {
+            item.setNext(previousItem);
+
+            previousItem = item;
+            item = nextItem;
+            nextItem = item.getNext();
+        }
+
+        item.setNext(previousItem);
+        head = item;
     }
 
     public List<T> getCopy() {
         List<T> listCopy = new List<>();
 
-        for (ListItem<T> listItem = head; listItem != null; listItem = listItem.getNext()) {
-            listCopy.insertHeadItem(listItem.getData());
+        for (ListItem<T> item = head; item != null; item = item.getNext()) {
+            listCopy.insertFirst(item.getData());
         }
 
         listCopy.reverse();

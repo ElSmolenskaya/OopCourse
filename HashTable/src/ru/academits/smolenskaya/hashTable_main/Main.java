@@ -9,10 +9,14 @@ public class Main {
         HashTable<String> hashTable = new HashTable<>(size);
 
         for (int i = 0; i < 20; i++) {
-            hashTable.add(String.format("%d", i));
+            hashTable.add(String.format("String%d", i));
         }
 
-        Object[] stringArray = hashTable.toArray();
+        for (String text : hashTable) {
+            System.out.println(text);
+        }
+
+        //Object[] stringArray = hashTable.toArray();
 
         /*System.out.println("hashTable = " + stringArray);*/
     }

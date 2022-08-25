@@ -3,7 +3,7 @@ package ru.academits.smolenskaya.hashTable;
 import java.util.*;
 
 public class HashTable<E> implements Collection<E> {
-    private ArrayList<E>[] hashTableRows;
+    private ArrayList<E>[] rows;
     private int modCount;
     private int elementsCount;
 
@@ -12,11 +12,11 @@ public class HashTable<E> implements Collection<E> {
 
     public HashTable(int size) {
         //noinspection unchecked
-        hashTableRows = (ArrayList<E>[]) new ArrayList[size];
+        rows = (ArrayList<E>[]) new ArrayList[size];
     }
 
     private class HashTableIterator implements Iterator<E> {
-        private int currentRowIndex = 0;
+        private int currentRowIndex = -1;
         private int currentColumnIndex = 0;
         private final int modCount;
 
@@ -25,12 +25,16 @@ public class HashTable<E> implements Collection<E> {
         }
 
         public boolean hasNext() {
-            if (currentColumnIndex < hashTableRows[currentRowIndex].size() - 1) {
+            if (currentRowIndex < 0) {
+                return elementsCount > 0;
+            }
+
+            if ((currentColumnIndex < rows[currentRowIndex].size() - 1)) {
                 return true;
             }
 
-            for (int i = currentRowIndex; i < hashTableRows.length; i++) {
-                if (hashTableRows[i] != null) {
+            for (int i = currentRowIndex + 1; i < rows.length; i++) {
+                if (rows[i] != null) {
                     return true;
                 }
             }
@@ -43,29 +47,40 @@ public class HashTable<E> implements Collection<E> {
                 throw new ConcurrentModificationException("The collection size was changed. New elements were added/removed while traversing the collection");
             }
 
-            if ((currentRowIndex >= hashTableRows.length) ||
-                    ((currentRowIndex == hashTableRows.length - 1) & (currentColumnIndex >= hashTableRows[currentRowIndex].size()))) {
+            if (currentRowIndex == -1) {
+                while (currentRowIndex < rows.length) {
+                    ++currentRowIndex;
+
+                    if (rows[currentRowIndex] != null) {
+                        return rows[currentRowIndex].get(currentColumnIndex);
+                    }
+                }
+
                 throw new NoSuchElementException("The collection is over");
             }
 
-            if (currentColumnIndex < hashTableRows[currentRowIndex].size() - 1) {
+            if ((currentRowIndex == rows.length - 1) && (currentColumnIndex == rows[currentRowIndex].size() - 1)) {
+                throw new NoSuchElementException("The collection is over");
+            }
+
+            if (currentColumnIndex < rows[currentRowIndex].size() - 1) {
                 ++currentColumnIndex;
 
-                return hashTableRows[currentRowIndex].get(currentColumnIndex);
+                return rows[currentRowIndex].get(currentColumnIndex);
             }
 
             ++currentRowIndex;
             currentColumnIndex = 0;
 
-            while (currentRowIndex < hashTableRows.length) {
-                if (hashTableRows[currentRowIndex] != null) {
-                    break;
+            while (currentRowIndex < rows.length) {
+                if (rows[currentRowIndex] != null) {
+                    return rows[currentRowIndex].get(currentColumnIndex);
                 }
 
                 ++currentRowIndex;
             }
 
-            return hashTableRows[currentRowIndex].get(currentColumnIndex);
+            throw new NoSuchElementException("The collection is over");
         }
     }
 
@@ -85,9 +100,9 @@ public class HashTable<E> implements Collection<E> {
             throw new IllegalArgumentException("o = null: collection must not contain null elements");
         }
 
-        int index = Math.abs(o.hashCode() % hashTableRows.length);
+        int index = Math.abs(o.hashCode() % rows.length);
 
-        return hashTableRows[index].contains(o);
+        return rows[index].contains(o);
     }
 
     @Override
@@ -149,19 +164,19 @@ public class HashTable<E> implements Collection<E> {
     @Override
     public boolean add(E e) {
         //if (!contains(e)) {
-        int index = Math.abs(e.hashCode() % hashTableRows.length);
+        int index = Math.abs(e.hashCode() % rows.length);
 
-        if (hashTableRows[index] == null) {
-            hashTableRows[index] = new ArrayList<>();
+        if (rows[index] == null) {
+            rows[index] = new ArrayList<>();
         }
 
-        hashTableRows[index].add(e);
+        rows[index].add(e);
 
         ++elementsCount;
         ++modCount;
 
         return true;
-       /* }
+        /*}
 
         return false;*/
     }
@@ -169,8 +184,8 @@ public class HashTable<E> implements Collection<E> {
     @Override
     public boolean remove(Object o) {
         if (contains(o)) {
-            int index = Math.abs(o.hashCode() % hashTableRows.length);
-            hashTableRows[index].remove(o);
+            int index = Math.abs(o.hashCode() % rows.length);
+            rows[index].remove(o);
 
             --elementsCount;
             ++modCount;
@@ -218,7 +233,7 @@ public class HashTable<E> implements Collection<E> {
     public boolean retainAll(Collection<?> c) {
         int startElementsCount = elementsCount;
 
-        for (ArrayList<E> row : hashTableRows) {
+        for (ArrayList<E> row : rows) {
             for (E element : row) {
                 if (element != null & !c.contains(element)) {
                     remove(element);
@@ -231,7 +246,7 @@ public class HashTable<E> implements Collection<E> {
 
     @Override
     public void clear() {
-        for (ArrayList<E> row : hashTableRows) {
+        for (ArrayList<E> row : rows) {
             row.clear();
         }
 
