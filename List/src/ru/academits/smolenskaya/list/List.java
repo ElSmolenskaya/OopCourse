@@ -178,11 +178,19 @@ public class List<T> {
     public List<T> getCopy() {
         List<T> listCopy = new List<>();
 
-        for (ListItem<T> item = head; item != null; item = item.getNext()) {
-            listCopy.insertFirst(item.getData());
+        if (head == null) {
+            return listCopy;
         }
 
-        listCopy.reverse();
+        ListItem<T> previousItemCopy = new ListItem<>(head.getData());
+        listCopy.head = previousItemCopy;
+
+        for (ListItem<T> item = head.getNext(); item != null; item = item.getNext()) {
+            ListItem<T> itemCopy = new ListItem<>(item.getData());
+            previousItemCopy.setNext(itemCopy);
+
+            previousItemCopy = itemCopy;
+        }
 
         return listCopy;
     }

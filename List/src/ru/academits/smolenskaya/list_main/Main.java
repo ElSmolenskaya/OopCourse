@@ -62,8 +62,5 @@ public class Main {
 
         List<Integer> integerListCopy = integerList.getCopy();
         System.out.println("copy = " + integerListCopy);
-
-        integerList.insert(integerList.getSize(), 333);
-        System.out.println(integerList);
     }
 }
