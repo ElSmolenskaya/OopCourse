@@ -109,14 +109,10 @@ public class ArrayList<E> implements List<E> {
     }
 
     @Override
-    public <E1> E1[] toArray(E1[] array) {
+    public <T> T[] toArray(T[] array) {
         if (array.length < size) {
             //noinspection unchecked
-            E1[] copyArray = (E1[]) new Object[size];
-
-            toArrayHelper(items, copyArray, size);
-
-            return copyArray;
+            return (T[]) Arrays.copyOf(toArray(), size);
         }
 
         toArrayHelper(items, array, size);

@@ -3,12 +3,9 @@ package ru.academits.smolenskaya.hashTable;
 import java.util.*;
 
 public class HashTable<E> implements Collection<E> {
-    private ArrayList<E>[] rows;
-    private int modCount;
+    private final ArrayList<E>[] rows;
     private int elementsCount;
-
-    public HashTable() {
-    }
+    private int modCount;
 
     public HashTable(int size) {
         //noinspection unchecked
@@ -34,7 +31,7 @@ public class HashTable<E> implements Collection<E> {
             }
 
             for (int i = currentRowIndex + 1; i < rows.length; i++) {
-                if (rows[i] != null) {
+                if (rows[i].size() > 0) {
                     return true;
                 }
             }
@@ -43,20 +40,22 @@ public class HashTable<E> implements Collection<E> {
         }
 
         public E next() {
+            if (elementsCount == 0) {
+                throw new NoSuchElementException("The collection is over");
+            }
+
             if (modCount != HashTable.this.modCount) {
                 throw new ConcurrentModificationException("The collection size was changed. New elements were added/removed while traversing the collection");
             }
 
             if (currentRowIndex == -1) {
-                while (currentRowIndex < rows.length) {
+                while (true) {
                     ++currentRowIndex;
 
-                    if (rows[currentRowIndex] != null) {
+                    if (rows[currentRowIndex].size() > 0) {
                         return rows[currentRowIndex].get(currentColumnIndex);
                     }
                 }
-
-                throw new NoSuchElementException("The collection is over");
             }
 
             if ((currentRowIndex == rows.length - 1) && (currentColumnIndex == rows[currentRowIndex].size() - 1)) {
@@ -73,7 +72,7 @@ public class HashTable<E> implements Collection<E> {
             currentColumnIndex = 0;
 
             while (currentRowIndex < rows.length) {
-                if (rows[currentRowIndex] != null) {
+                if (rows[currentRowIndex].size() > 0) {
                     return rows[currentRowIndex].get(currentColumnIndex);
                 }
 
@@ -100,7 +99,15 @@ public class HashTable<E> implements Collection<E> {
             throw new IllegalArgumentException("o = null: collection must not contain null elements");
         }
 
+        if (elementsCount == 0) {
+            return false;
+        }
+
         int index = Math.abs(o.hashCode() % rows.length);
+
+        if (rows[index] == null) {
+            return false;
+        }
 
         return rows[index].contains(o);
     }
@@ -125,37 +132,19 @@ public class HashTable<E> implements Collection<E> {
         return resultArray;
     }
 
-    private static <E> void copyElementHelper(E element1, E element2) {
-        element1 = element2;
-    }
-
     @Override
     public <T> T[] toArray(T[] array) {
         if (array.length < elementsCount) {
             //noinspection unchecked
-            T[] copyArray = (T[]) new Object[elementsCount];
-
-            int i = 0;
-
-            for (E element : this) {
-                copyElementHelper(copyArray[i], element);
-
-                ++i;
-            }
-
-            return copyArray;
+            return (T[]) Arrays.copyOf(toArray(), elementsCount);
         }
 
-        int i = 0;
 
-        for (E element : this) {
-            copyElementHelper(array[i], element);
-
-            ++i;
-        }
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(toArray(), 0, array, 0, elementsCount);
 
         if (array.length > elementsCount) {
-            array[i] = null;
+            array[elementsCount] = null;
         }
 
         return array;
@@ -163,11 +152,14 @@ public class HashTable<E> implements Collection<E> {
 
     @Override
     public boolean add(E e) {
-        //if (!contains(e)) {
         int index = Math.abs(e.hashCode() % rows.length);
 
         if (rows[index] == null) {
             rows[index] = new ArrayList<>();
+        }
+
+        if (rows[index].contains(e)) {
+            return false;
         }
 
         rows[index].add(e);
@@ -176,24 +168,22 @@ public class HashTable<E> implements Collection<E> {
         ++modCount;
 
         return true;
-        /*}
-
-        return false;*/
     }
 
     @Override
     public boolean remove(Object o) {
-        if (contains(o)) {
-            int index = Math.abs(o.hashCode() % rows.length);
-            rows[index].remove(o);
-
-            --elementsCount;
-            ++modCount;
-
-            return true;
+        if (!contains(o)) {
+            return false;
         }
 
-        return false;
+        int index = Math.abs(o.hashCode() % rows.length);
+
+        rows[index].remove(o);
+
+        --elementsCount;
+        ++modCount;
+
+        return true;
     }
 
     @Override
@@ -234,9 +224,22 @@ public class HashTable<E> implements Collection<E> {
         int startElementsCount = elementsCount;
 
         for (ArrayList<E> row : rows) {
-            for (E element : row) {
-                if (element != null & !c.contains(element)) {
-                    remove(element);
+            if (row != null) {
+                int j = 0;
+
+                while (j < row.size()) {
+                    if (!c.contains(row.get(j))) {
+                        row.remove(j);
+
+                        --elementsCount;
+                        ++modCount;
+
+                        if (j >= row.size()) {
+                            break;
+                        }
+                    } else {
+                        j++;
+                    }
                 }
             }
         }
@@ -252,5 +255,23 @@ public class HashTable<E> implements Collection<E> {
 
         modCount += elementsCount;
         elementsCount = 0;
+    }
+
+    public String toString() {
+        if (elementsCount == 0) {
+            return "[]";
+        }
+
+        StringBuilder stringBuilder = new StringBuilder("[");
+
+        for (E element : this) {
+            stringBuilder.append(element).append(", ");
+        }
+
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 }
