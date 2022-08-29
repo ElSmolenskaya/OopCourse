@@ -1,6 +1,6 @@
-package ru.academits.smolenskaya.arrayList_main;
+package ru.academits.smolenskaya.array_list_main;
 
-import ru.academits.smolenskaya.arrayList.ArrayList;
+import ru.academits.smolenskaya.array_list.ArrayList;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -77,9 +77,7 @@ public class Main {
 
         System.out.printf("arrayList.size = %d%n", arrayList.size());
 
-        int newSize = 4;
-
-        arrayList.trimToSize(newSize);
+        arrayList.trimToSize();
         System.out.println("arrayList = " + arrayList);
 
         for (int i = 0; i < size; i++) {
@@ -88,9 +86,15 @@ public class Main {
 
         System.out.println("arrayList = " + arrayList);
 
-        Integer[] array = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 12, 12, 13, 14, 14};
+        Integer[] array = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 12, 12, 13, 14, 14};
         arrayList.toArray(array);
 
         System.out.printf("arrayList.toArray = " + Arrays.toString(array));
+
+        System.out.println();
+
+        ArrayList<Integer> arrayList1 = new ArrayList<>();
+        arrayList1.addAll(List.of(1, 2, 3));
+        System.out.println("arrayList1 = " + arrayList1);
     }
 }

@@ -1,6 +1,6 @@
-package ru.academits.smolenskaya.hashTable_main;
+package ru.academits.smolenskaya.hash_table_main;
 
-import ru.academits.smolenskaya.hashTable.HashTable;
+import ru.academits.smolenskaya.hash_table.HashTable;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class Main {
 
         HashTable<String> hashTable = new HashTable<>(size);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 6; i++) {
             hashTable.add(String.format("String%d", i));
         }
 
@@ -46,7 +46,7 @@ public class Main {
 
         System.out.println();
 
-        System.out.println("hashTable.deleteAll" + list2 + " = " + hashTable.removeAll(list2));
+        System.out.println("hashTable.removeAll" + list2 + " = " + hashTable.removeAll(list2));
         System.out.println(hashTable);
 
         System.out.println();
@@ -65,5 +65,11 @@ public class Main {
         System.out.println(hashTable);
 
         System.out.println("hashTable.size = " + hashTable.size());
+
+        System.out.println();
+
+        HashTable<String> hashTable1 = new HashTable<>();
+        hashTable1.add(null);
+        System.out.println("hashTable1 = " + hashTable1);
     }
 }
