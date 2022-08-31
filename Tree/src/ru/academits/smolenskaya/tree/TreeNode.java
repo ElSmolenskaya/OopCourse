@@ -1,17 +1,11 @@
 package ru.academits.smolenskaya.tree;
 
-class TreeNode<T extends Comparable <T>> {
+class TreeNode<T extends Comparable<T>> {
     private TreeNode<T> left;
     private TreeNode<T> right;
     private T data;
 
     public TreeNode(T data) {
-        this.data = data;
-    }
-
-    public TreeNode(T data, TreeNode<T> left, TreeNode<T> right) {
-        this.left = left;
-        this.right = right;
         this.data = data;
     }
 
@@ -35,7 +29,9 @@ class TreeNode<T extends Comparable <T>> {
         return data;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    protected void clear() {
+        data = null;
+        left = null;
+        right = null;
     }
 }
