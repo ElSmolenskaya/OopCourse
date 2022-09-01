@@ -120,13 +120,13 @@ public class Matrix {
     }
 
     public void transpose() {
-        Vector[] vectors = new Vector[getColumnsCount()];
+        Vector[] columns = new Vector[getColumnsCount()];
 
         for (int i = 0; i < getColumnsCount(); i++) {
-            vectors[i] = getColumn(i);
+            columns[i] = getColumn(i);
         }
 
-        rows = vectors;
+        rows = columns;
     }
 
     public void multiply(double number) {
@@ -280,10 +280,9 @@ public class Matrix {
 
         for (int i = 0; i < rowsCount; i++) {
             for (int j = 0; j < columnsCount; j++) {
-                int minRowsCount = Math.min(rowsCount, matrix2.getRowsCount());
                 int scalarProduct = 0;
 
-                for (int k = 0; k < minRowsCount; k++) {
+                for (int k = 0; k < matrix1.getColumnsCount(); k++) {
                     scalarProduct += matrix1.rows[i].getComponent(k) * matrix2.rows[k].getComponent(j);
                 }
 
