@@ -43,7 +43,7 @@ public class Main {
 
         Integer data = 2;
 
-        System.out.println("isDeleted = " + integerList.deleteByValue(data));
+        System.out.println("isDeleted = " + integerList.deleteByData(data));
         System.out.println(integerList);
 
         System.out.println();

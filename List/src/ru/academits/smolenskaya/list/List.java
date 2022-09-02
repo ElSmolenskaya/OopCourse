@@ -20,7 +20,7 @@ public class List<T> {
 
     private void checkIndex(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("index = " + index + ": index must be >= 0 and < " + size);
+            throw new IndexOutOfBoundsException("Index = " + index + ": index must be >= 0 and < " + size);
         }
     }
 
@@ -59,11 +59,11 @@ public class List<T> {
             return deleteFirst();
         }
 
-        ListItem<T> item = getItem(index - 1);
+        ListItem<T> previousItem = getItem(index - 1);
 
-        T deletedData = item.getNext().getData();
+        T deletedData = previousItem.getNext().getData();
 
-        item.setNext(item.getNext().getNext());
+        previousItem.setNext(previousItem.getNext().getNext());
 
         size--;
 
@@ -77,22 +77,15 @@ public class List<T> {
     }
 
     public void insert(int index, T data) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index = " + index + ": index must be >= 0 and <= " + size);
+        }
+
         if (index == 0) {
             insertFirst(data);
 
             return;
         }
-
-        if (index == size) {
-            ListItem<T> lastItem = getItem(size - 1);
-            lastItem.setNext(new ListItem<>(data));
-
-            size++;
-
-            return;
-        }
-
-        checkIndex(index);
 
         ListItem<T> previousItem = getItem(index - 1);
 
@@ -103,9 +96,9 @@ public class List<T> {
         size++;
     }
 
-    public boolean deleteByValue(T data) {
+    public boolean deleteByData(T data) {
         for (ListItem<T> item = head, previousItem = null; item != null; previousItem = item, item = item.getNext()) {
-            if (item.getData().equals(data)) {
+            if ((item.getData() == null && data == null) || (item.getData() != null && item.getData().equals(data))) {
                 if (previousItem == null) {
                     head = item.getNext();
                 } else {
@@ -185,11 +178,15 @@ public class List<T> {
         ListItem<T> previousItemCopy = new ListItem<>(head.getData());
         listCopy.head = previousItemCopy;
 
+        ++listCopy.size;
+
         for (ListItem<T> item = head.getNext(); item != null; item = item.getNext()) {
             ListItem<T> itemCopy = new ListItem<>(item.getData());
             previousItemCopy.setNext(itemCopy);
 
             previousItemCopy = itemCopy;
+
+            ++listCopy.size;
         }
 
         return listCopy;
