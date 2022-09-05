@@ -1,6 +1,7 @@
 package ru.academits.smolenskaya.list;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class List<T> {
     private ListItem<T> head;
@@ -89,16 +90,14 @@ public class List<T> {
 
         ListItem<T> previousItem = getItem(index - 1);
 
-        ListItem<T> listItem = new ListItem<>(data, previousItem.getNext());
-
-        previousItem.setNext(listItem);
+        previousItem.setNext(new ListItem<>(data, previousItem.getNext()));
 
         size++;
     }
 
     public boolean deleteByData(T data) {
         for (ListItem<T> item = head, previousItem = null; item != null; previousItem = item, item = item.getNext()) {
-            if ((item.getData() == null && data == null) || (item.getData() != null && item.getData().equals(data))) {
+            if (Objects.equals(item.getData(), data)) {
                 if (previousItem == null) {
                     head = item.getNext();
                 } else {
@@ -178,16 +177,14 @@ public class List<T> {
         ListItem<T> previousItemCopy = new ListItem<>(head.getData());
         listCopy.head = previousItemCopy;
 
-        ++listCopy.size;
-
         for (ListItem<T> item = head.getNext(); item != null; item = item.getNext()) {
             ListItem<T> itemCopy = new ListItem<>(item.getData());
             previousItemCopy.setNext(itemCopy);
 
             previousItemCopy = itemCopy;
-
-            ++listCopy.size;
         }
+
+        listCopy.size = size;
 
         return listCopy;
     }
