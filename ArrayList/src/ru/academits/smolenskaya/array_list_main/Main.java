@@ -56,7 +56,7 @@ public class Main {
         System.out.println("arrayList = " + arrayList);
 
         arrayList.retainAll(List.of(16, 1, 2, 3, 12, 23));
-        System.out.println("arrayList = " + arrayList);
+        System.out.println("retained arrayList = " + arrayList);
 
         Object checkValue = 33;
 
