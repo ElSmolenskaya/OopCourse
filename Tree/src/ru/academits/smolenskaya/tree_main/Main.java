@@ -1,59 +1,83 @@
 package ru.academits.smolenskaya.tree_main;
 
+import ru.academits.smolenskaya.shapes.*;
 import ru.academits.smolenskaya.tree.Tree;
 
-public class Main {
-    public static void printArray(Object[] array) {
-        for (Object element : array) {
-            System.out.print(element + ", ");
-        }
-    }
+import java.util.Comparator;
+import java.util.function.Consumer;
 
+public class Main {
     public static void main(String[] args) {
-        Tree<Integer> tree = new Tree<>(8);
+        Tree<Integer> tree = new Tree<>();
+        tree.insert(8);
         tree.insert(3);
+        tree.insert(null);
         tree.insert(10);
         tree.insert(14);
         tree.insert(13);
+        tree.insert(null);
+        tree.insert(null);
         tree.insert(1);
         tree.insert(6);
         tree.insert(4);
         tree.insert(7);
 
-        System.out.printf("Размер дерева: %d%n", tree.getSize());
+        System.out.printf("Размер дерева: %d%n", tree.size());
 
-        Object[] array1 = tree.getBreadthFirstTraverseArray();
+        Consumer<Integer> printNumber = number -> System.out.printf("%d, ", number);
+
         System.out.print("Обход дерева в ширину: ");
-        printArray(array1);
+        tree.widthTraverse(printNumber);
 
         System.out.println();
 
-        Object[] array2 = tree.getDepthTraverseArray();
         System.out.print("Обход дерева в глубину: ");
-        printArray(array2);
+        tree.depthTraverse(printNumber);
 
         System.out.println();
 
-        Object[] array3 = tree.getRecursiveDepthTraverseArray();
         System.out.print("Рекурсивный обход дерева в глубину: ");
-        printArray(array3);
+        tree.recursiveDepthTraverse(printNumber);
 
         System.out.println();
 
         Integer data = 10;
-        System.out.printf("Элемент %d принадлежит дереву: %s%n", data, tree.isExists(data));
+        System.out.printf("Элемент %d принадлежит дереву: %s%n", data, tree.contains(data));
 
-        data = 8;
-        System.out.printf("Элемент %d удален из дерева: %s%n", data, tree.delete(8));
+        data = null;
+
+        System.out.printf("Элемент %d удален из дерева: %s%n", data, tree.delete(data));
+        System.out.printf("Элемент %d удален из дерева: %s%n", data, tree.delete(data));
+        System.out.printf("Элемент %d удален из дерева: %s%n", data, tree.delete(data));
+        System.out.printf("Элемент %d удален из дерева: %s%n", data, tree.delete(data));
 
         System.out.print("Рекурсивный обход дерева в глубину: ");
-        Object[] array4 = tree.getRecursiveDepthTraverseArray();
-        printArray(array4);
+        tree.recursiveDepthTraverse(printNumber);
 
         System.out.println();
-        System.out.printf("Размер дерева: %d%n", tree.getSize());
+        System.out.printf("Размер дерева: %d%n", tree.size());
 
         Tree<Integer> emptyTree = new Tree<>();
-        System.out.printf("Размер пустого дерева: %d", emptyTree.getSize());
+        System.out.printf("Размер пустого дерева: %d", emptyTree.size());
+
+        System.out.println();
+
+        Tree<Shape> shapesTree = new Tree(new Comparator<Shape>() {
+            public int compare(Shape shape1, Shape shape2) {
+                return Double.compare(shape1.getArea(), shape2.getArea());
+            }
+        });
+
+        shapesTree.insert(new Circle(10));
+        shapesTree.insert(new Rectangle(5, 5));
+        shapesTree.insert(new Circle(12));
+        shapesTree.insert(new Square(25));
+
+        Consumer<Shape> printShape = shape -> System.out.printf("%s; ", shape);
+
+        System.out.println();
+
+        System.out.println("Обход дерева фигур в глубину: ");
+        shapesTree.depthTraverse(printShape);
     }
 }
