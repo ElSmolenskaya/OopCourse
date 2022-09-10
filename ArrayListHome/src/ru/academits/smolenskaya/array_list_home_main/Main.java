@@ -53,7 +53,7 @@ public class Main {
 
         ArrayList<String> stringsFromFile = getStringsListFromFile(fileName);
 
-        if (stringsFromFile.size() > 0) {
+        if (stringsFromFile.isEmpty()) {
             System.out.printf("Strings from file %s:%n", fileName);
 
             for (String string : stringsFromFile) {

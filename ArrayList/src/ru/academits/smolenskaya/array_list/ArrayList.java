@@ -4,16 +4,20 @@ import java.util.*;
 
 public class ArrayList<E> implements List<E> {
     private E[] items;
-    private static final int defaultCapacity = 100;
+    private static final int DEFAULT_CAPACITY = 100;
     private int size;
     private int modCount;
 
     public ArrayList() {
         //noinspection unchecked
-        items = (E[]) new Object[defaultCapacity];
+        items = (E[]) new Object[DEFAULT_CAPACITY];
     }
 
     public ArrayList(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity = " + capacity + ": capacity must be >= 0");
+        }
+
         //noinspection unchecked
         items = (E[]) new Object[capacity];
     }
@@ -98,7 +102,7 @@ public class ArrayList<E> implements List<E> {
     private void increaseCapacity() {
         if (items.length == 0) {
             //noinspection unchecked
-            items = (E[]) new Object[defaultCapacity];
+            items = (E[]) new Object[DEFAULT_CAPACITY];
         } else {
             items = Arrays.copyOf(items, items.length * 2);
         }
@@ -177,8 +181,14 @@ public class ArrayList<E> implements List<E> {
         boolean hasRemoved = false;
 
         for (Object item : c) {
-            while (remove(item)) {
-                hasRemoved = true;
+            for (int index = 0; index < size; index++) {
+                if (Objects.equals(items[index], item)) {
+                    remove(index);
+
+                    hasRemoved = true;
+
+                    --index;
+                }
             }
         }
 
@@ -197,18 +207,15 @@ public class ArrayList<E> implements List<E> {
             return true;
         }
 
-        int i = 0;
         boolean hasChanged = false;
 
-        while (i < size) {
-            if (!c.contains(items[i])) {
-                E item = items[i];
+        for (int index = 0; index < size; index++) {
+            if (!c.contains(items[index])) {
+                remove(index);
 
-                while (remove(item)) {
-                    hasChanged = true;
-                }
-            } else {
-                ++i;
+                hasChanged = true;
+
+                --index;
             }
         }
 
