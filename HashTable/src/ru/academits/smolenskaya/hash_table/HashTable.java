@@ -91,7 +91,7 @@ public class HashTable<E> implements Collection<E> {
 
         int index = getIndex(o);
 
-        if (lists[index] == null || lists[index].isEmpty()) {
+        if (lists[index] == null) {
             return false;
         }
 
@@ -159,13 +159,9 @@ public class HashTable<E> implements Collection<E> {
 
     @Override
     public boolean remove(Object o) {
-        if (size == 0) {
-            return false;
-        }
-
         int index = getIndex(o);
 
-        if (lists[index] == null || lists[index].isEmpty()) {
+        if (lists[index] == null) {
             return false;
         }
 

@@ -1,5 +1,6 @@
 package ru.academits.smolenskaya.lambdas_person;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class Person {
     private final String name;
     private final int age;
