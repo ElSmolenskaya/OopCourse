@@ -32,7 +32,7 @@ public class Main {
         System.out.println();
 
         List<Person> personsUnder18 = persons.stream()
-                .filter(x -> x.getAge() < 18)
+                .filter(person -> person.getAge() < 18)
                 .toList();
 
         double personsUnder18AverageAge = personsUnder18.stream().
@@ -40,7 +40,7 @@ public class Main {
                 average().
                 orElse(0);
 
-        System.out.printf("Средний возраст людей младше 18 лет равен %f%n", personsUnder18AverageAge);
+        System.out.printf("Средний возраст людей младше 18 лет равен %5.2f%n", personsUnder18AverageAge);
 
         System.out.println();
 
@@ -50,7 +50,7 @@ public class Main {
                                 .averagingDouble(Person::getAge)));
 
         System.out.println("Средний возраст людей в разрезе имен:");
-        averageAgeByPersons.forEach((name, age) -> System.out.printf("%s - %5.2f%n", name, age));
+        averageAgeByPersons.forEach((name, age) -> System.out.printf("%15s - %-5.2f%n", name, age));
 
         System.out.println();
 
@@ -59,7 +59,7 @@ public class Main {
                 .toList();
 
         System.out.println(personsFrom18To45.stream()
-                .sorted((p1, p2) -> p2.getAge() - p1.getAge())
+                .sorted((person1, person2) -> person2.getAge() - person1.getAge())
                 .map(Person::getName)
                 .collect(Collectors
                         .joining(", ", "Имена людей от 18 до 45 в порядке убывания возраста: ", ".")));
