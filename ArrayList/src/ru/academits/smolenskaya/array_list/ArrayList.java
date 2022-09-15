@@ -180,15 +180,13 @@ public class ArrayList<E> implements List<E> {
 
         boolean hasRemoved = false;
 
-        for (Object item : c) {
-            for (int index = 0; index < size; index++) {
-                if (Objects.equals(items[index], item)) {
-                    remove(index);
+        for (int i = 0; i < size; i++) {
+            if (c.contains(items[i])) {
+                remove(i);
 
-                    hasRemoved = true;
+                hasRemoved = true;
 
-                    --index;
-                }
+                --i;
             }
         }
 
@@ -209,13 +207,13 @@ public class ArrayList<E> implements List<E> {
 
         boolean hasChanged = false;
 
-        for (int index = 0; index < size; index++) {
-            if (!c.contains(items[index])) {
-                remove(index);
+        for (int i = 0; i < size; i++) {
+            if (!c.contains(items[i])) {
+                remove(i);
 
                 hasChanged = true;
 
-                --index;
+                --i;
             }
         }
 
