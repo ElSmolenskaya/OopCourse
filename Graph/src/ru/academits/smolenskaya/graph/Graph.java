@@ -1,6 +1,8 @@
 package ru.academits.smolenskaya.graph;
 
+import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.function.Consumer;
 
 public class Graph {
@@ -34,12 +36,12 @@ public class Graph {
 
         for (int i = 0; i < visited.length; i++) {
             if (!visited[i]) {
-                LinkedList<Integer> queue = new LinkedList<>();
+                Queue<Integer> queue = new LinkedList<>();
 
                 queue.add(i);
 
-                while (queue.size() > 0) {
-                    int j = queue.remove(0);
+                while (!queue.isEmpty()) {
+                    int j = queue.remove();
 
                     if (!visited[j]) {
                         consumer.accept(j);
@@ -62,12 +64,12 @@ public class Graph {
 
         for (int i = 0; i < visited.length; i++) {
             if (!visited[i]) {
-                LinkedList<Integer> stack = new LinkedList<>();
+                Deque<Integer> stack = new LinkedList<>();
 
-                stack.add(i);
+                stack.addLast(i);
 
-                while (stack.size() > 0) {
-                    int j = stack.remove(stack.size() - 1);
+                while (!stack.isEmpty()) {
+                    int j = stack.removeLast();
 
                     if (!visited[j]) {
                         consumer.accept(j);
@@ -76,7 +78,7 @@ public class Graph {
 
                         for (int k = j + 1; k < edges.length; k++) {
                             if (edges[j][k] != 0 && !visited[k]) {
-                                stack.add(k);
+                                stack.addLast(k);
                             }
                         }
                     }

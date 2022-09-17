@@ -51,6 +51,9 @@ public class Main {
         System.out.printf("Элемент %d удален из дерева: %s%n", data, tree.delete(data));
         System.out.printf("Элемент %d удален из дерева: %s%n", data, tree.delete(data));
 
+        data = 1;
+        System.out.printf("Элемент %d удален из дерева: %s%n", data, tree.delete(data));
+
         System.out.print("Рекурсивный обход дерева в глубину: ");
         tree.recursiveDepthTraverse(printNumber);
 
@@ -62,11 +65,7 @@ public class Main {
 
         System.out.println();
 
-        Tree<Shape> shapesTree = new Tree(new Comparator<Shape>() {
-            public int compare(Shape shape1, Shape shape2) {
-                return Double.compare(shape1.getArea(), shape2.getArea());
-            }
-        });
+        Tree<Shape> shapesTree = new Tree<>(Comparator.comparingDouble(Shape::getArea));
 
         shapesTree.insert(new Circle(10));
         shapesTree.insert(new Rectangle(5, 5));

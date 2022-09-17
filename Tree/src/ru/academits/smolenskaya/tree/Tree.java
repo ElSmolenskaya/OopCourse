@@ -1,7 +1,9 @@
 package ru.academits.smolenskaya.tree;
 
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.function.Consumer;
 
 public class Tree<T> {
@@ -16,27 +18,27 @@ public class Tree<T> {
         this.comparator = comparator;
     }
 
-    private int compare(T node1, T node2) {
-        if (node1 == null) {
-            if (node2 == null) {
+    private int compare(T data1, T data2) {
+        if (comparator != null) {
+            return comparator.compare(data1, data2);
+        }
+
+        if (data1 == null) {
+            if (data2 == null) {
                 return 0;
             }
 
             return -1;
         }
 
-        if (node2 == null) {
+        if (data2 == null) {
             return 1;
         }
 
-        if (comparator != null) {
-            return comparator.compare(node1, node2);
-        }
-
         //noinspection unchecked
-        Comparable<T> comparableNode = (Comparable<T>) node1;
+        Comparable<T> comparableData = (Comparable<T>) data1;
 
-        return comparableNode.compareTo(node2);
+        return comparableData.compareTo(data2);
     }
 
     public int size() {
@@ -63,7 +65,7 @@ public class Tree<T> {
 
                     ++size;
 
-                    break;
+                    return;
                 }
             } else {
                 if (node.getRight() != null) {
@@ -73,7 +75,7 @@ public class Tree<T> {
 
                     ++size;
 
-                    break;
+                    return;
                 }
             }
         }
@@ -114,57 +116,41 @@ public class Tree<T> {
     }
 
     private TreeNode<T> getNodeParent(T data) {
-        if (compare(data, root.getData()) == 0) {
-            return null;
-        }
-
+        TreeNode<T> nodeParent = null;
         TreeNode<T> node = root;
 
         while (true) {
-            if (compare(data, node.getData()) < 0) {
-                if (node.getLeft() == null) {
-                    return null;
-                }
+            int comparingResult = compare(data, node.getData());
 
-                if (compare(data, node.getLeft().getData()) == 0) {
-                    return node;
-                }
+            if (comparingResult == 0) {
+                return nodeParent;
+            }
 
-                node = node.getLeft();
+            nodeParent = node;
+
+            if (comparingResult < 0) {
+                node = nodeParent.getLeft();
             } else {
-                if (node.getRight() == null) {
-                    return null;
-                }
+                node = nodeParent.getRight();
+            }
 
-                if (compare(data, node.getRight().getData()) == 0) {
-                    return node;
-                }
-
-                node = node.getRight();
+            if (node == null) {
+                return null;
             }
         }
     }
 
-    private void replaceDeletedNode(TreeNode<T> parentNode, TreeNode<T> node, TreeNode<T> newNode) {
-        if (node == null) {
-            return;
-        }
-
-        if (newNode != null && newNode.getLeft() == null && newNode.getRight() == null) {
-            newNode.setLeft(node.getLeft());
-            newNode.setRight(node.getRight());
-        }
-
-        if (parentNode == null) {
-            root = newNode;
+    private void replaceNode(TreeNode<T> replaceableNodeParent, TreeNode<T> replaceableNode, TreeNode<T> nodeReplacement) {
+        if (replaceableNodeParent == null) {
+            root = nodeReplacement;
 
             return;
         }
 
-        if (parentNode.getLeft() == node) {
-            parentNode.setLeft(newNode);
-        } else if (parentNode.getRight() == node) {
-            parentNode.setRight(newNode);
+        if (replaceableNodeParent.getLeft() == replaceableNode) {
+            replaceableNodeParent.setLeft(nodeReplacement);
+        } else {
+            replaceableNodeParent.setRight(nodeReplacement);
         }
     }
 
@@ -173,63 +159,57 @@ public class Tree<T> {
             return false;
         }
 
-        TreeNode<T> nodeParent = getNodeParent(data);
-        TreeNode<T> node;
+        TreeNode<T> deletingNodeParent = getNodeParent(data);
+        TreeNode<T> deletingNode;
 
-        if (nodeParent == null) {
+        if (deletingNodeParent == null) {
             if (compare(data, root.getData()) != 0) {
                 return false;
             }
 
-            node = root;
+            deletingNode = root;
         } else {
-            node = getNode(nodeParent, data);
+            deletingNode = getNode(deletingNodeParent, data);
         }
 
-        if (node.getLeft() == null) {
-            if (node.getRight() == null) {
-                replaceDeletedNode(nodeParent, node, null);
-
-                --size;
-
-                return true;
-            }
-
-            TreeNode<T> rightNode = node.getRight();
-            node.setRight(null);
-
-            replaceDeletedNode(nodeParent, node, rightNode);
+        if (deletingNode.getLeft() == null && deletingNode.getRight() == null) {
+            replaceNode(deletingNodeParent, deletingNode, null);
 
             --size;
 
             return true;
         }
 
-        if (node.getRight() == null) {
-            TreeNode<T> leftNode = node.getLeft();
-            node.setLeft(null);
-
-            replaceDeletedNode(nodeParent, node, leftNode);
+        if (deletingNode.getLeft() == null) {
+            replaceNode(deletingNodeParent, deletingNode, deletingNode.getRight());
 
             --size;
 
             return true;
         }
 
-        TreeNode<T> minimalNodeParent = node;
-        TreeNode<T> minimalNode = node.getRight();
+        if (deletingNode.getRight() == null) {
+            replaceNode(deletingNodeParent, deletingNode, deletingNode.getLeft());
+
+            --size;
+
+            return true;
+        }
+
+        TreeNode<T> minimalNodeParent = deletingNode;
+        TreeNode<T> minimalNode = deletingNode.getRight();
 
         while (minimalNode.getLeft() != null) {
             minimalNodeParent = minimalNode;
             minimalNode = minimalNode.getLeft();
         }
 
-        TreeNode<T> rightNode = minimalNode.getRight();
-        minimalNode.setRight(null);
+        replaceNode(minimalNodeParent, minimalNode, minimalNode.getRight());
 
-        replaceDeletedNode(minimalNodeParent, minimalNode, rightNode);
+        minimalNode.setLeft(deletingNode.getLeft());
+        minimalNode.setRight(deletingNode.getRight());
 
-        replaceDeletedNode(nodeParent, node, minimalNode);
+        replaceNode(deletingNodeParent, deletingNode, minimalNode);
 
         --size;
 
@@ -241,11 +221,11 @@ public class Tree<T> {
             return;
         }
 
-        LinkedList<TreeNode<T>> queue = new LinkedList<>();
+        Queue<TreeNode<T>> queue = new LinkedList<>();
         queue.add(root);
 
-        while (queue.size() > 0) {
-            TreeNode<T> node = queue.remove(0);
+        while (!queue.isEmpty()) {
+            TreeNode<T> node = queue.remove();
 
             consumer.accept(node.getData());
 
@@ -264,20 +244,20 @@ public class Tree<T> {
             return;
         }
 
-        LinkedList<TreeNode<T>> stack = new LinkedList<>();
-        stack.add(root);
+        Deque<TreeNode<T>> stack = new LinkedList<>();
+        stack.addLast(root);
 
-        while (stack.size() > 0) {
-            TreeNode<T> node = stack.remove(stack.size() - 1);
+        while (!stack.isEmpty()) {
+            TreeNode<T> node = stack.removeLast();
 
             consumer.accept(node.getData());
 
             if (node.getRight() != null) {
-                stack.add(node.getRight());
+                stack.addLast(node.getRight());
             }
 
             if (node.getLeft() != null) {
-                stack.add(node.getLeft());
+                stack.addLast(node.getLeft());
             }
         }
     }
