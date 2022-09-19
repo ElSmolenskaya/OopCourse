@@ -6,6 +6,10 @@ public class Person {
     private final int age;
 
     public Person(String name, int age) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name = null: name must be not null.");
+        }
+
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Name is empty: name must not be empty.");
         }
