@@ -120,15 +120,15 @@ public class Tree<T> {
         TreeNode<T> node = root;
 
         while (true) {
-            int comparingResult = compare(data, node.getData());
+            int comparisonResult = compare(data, node.getData());
 
-            if (comparingResult == 0) {
+            if (comparisonResult == 0) {
                 return nodeParent;
             }
 
             nodeParent = node;
 
-            if (comparingResult < 0) {
+            if (comparisonResult < 0) {
                 node = nodeParent.getLeft();
             } else {
                 node = nodeParent.getRight();

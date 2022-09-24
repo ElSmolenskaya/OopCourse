@@ -3,15 +3,14 @@ package ru.academits.smolenskaya.csv;
 import java.io.*;
 
 public class Main {
-    public static String getHtmlCellFromCsvCell(String csvString) {
-        String resultString = csvString;
+    public static String getHtmlSymbolsFromCsvSymbol(char csvSymbol) {
+        String htmlSymbols = Character.toString(csvSymbol);
 
-        resultString = resultString.replaceAll("<", "&lt;");
-        resultString = resultString.replaceAll(">", "&gt;");
-        resultString = resultString.replaceAll("&", "&amp;");
-        resultString = resultString.replaceAll("\"\"", "\"");
+        htmlSymbols = htmlSymbols.replaceAll("<", "&lt;");
+        htmlSymbols = htmlSymbols.replaceAll(">", "&gt;");
+        htmlSymbols = htmlSymbols.replaceAll("&", "&amp;");
 
-        return resultString;
+        return htmlSymbols;
     }
 
     public static void gettingHtmlTableFromCsvTable(String inputFilePath, String outputFilePath) {
@@ -33,134 +32,81 @@ public class Main {
             bufferedWriter.newLine();
             bufferedWriter.write("\t\t<table>");
 
-            String cell;
             String inputLine;
-
-            int rowQueuesCount = 0;
 
             boolean isRowCompleted = true;
 
-            char[] inputChar = new char[1];
-
-            while (bufferedReader.read(inputChar) > 0) {
-                if (isRowCompleted) {
-                    bufferedWriter.newLine();
-                    bufferedWriter.write("\t\t\t<tr>");
-                }
-
-                if (inputChar.length == 0) {
-                    if (isRowCompleted) {
-                        bufferedWriter.newLine();
-                        bufferedWriter.write("\t\t\t\t<td></td>");
-                        bufferedWriter.newLine();
-                        bufferedWriter.write("\t\t\t</tr>");
-                    } else {
-                        bufferedWriter.write("<br/>");
-                    }
-                }
-            }
-
-            /*while ((inputLine = bufferedReader.readLine()) != null) {
-                if (isRowCompleted) {
-                    bufferedWriter.newLine();
-                    bufferedWriter.write("\t\t\t<tr>");
-                }
-
+            while ((inputLine = bufferedReader.readLine()) != null) {
                 if (inputLine.isEmpty()) {
                     if (isRowCompleted) {
                         bufferedWriter.newLine();
+                        bufferedWriter.write("\t\t\t<tr>");
+
+                        bufferedWriter.newLine();
                         bufferedWriter.write("\t\t\t\t<td></td>");
                         bufferedWriter.newLine();
                         bufferedWriter.write("\t\t\t</tr>");
                     } else {
                         bufferedWriter.write("<br/>");
                     }
-                }
-
-                int startCellIndex = 0;
-
-                while (startCellIndex < inputLine.length()) {
+                } else {
                     if (isRowCompleted) {
                         bufferedWriter.newLine();
+                        bufferedWriter.write("\t\t\t<tr>");
+                        bufferedWriter.newLine();
                         bufferedWriter.write("\t\t\t\t<td>");
-                    }
-
-                    int endCellIndex = -1;
-
-                    if (isRowCompleted && inputLine.charAt(startCellIndex) != '"') {
-                        endCellIndex = inputLine.indexOf(',', startCellIndex);
-
-                        if (endCellIndex < 0) {
-                            endCellIndex = inputLine.length();
-
-                            cell = inputLine.substring(startCellIndex, endCellIndex);
-
-                            bufferedWriter.write(getHtmlCellFromCsvCell(cell));
-                            bufferedWriter.write("</td>");
-                            bufferedWriter.newLine();
-                            bufferedWriter.write("\t\t\t</tr>");
-
-                            break;
-                        }
-
-                        cell = inputLine.substring(startCellIndex, endCellIndex);
                     } else {
-                        int index = startCellIndex;
+                        bufferedWriter.write("<br/>");
+                    }
+                }
 
-                        if (isRowCompleted) {
-                            ++startCellIndex;
-                        }
+                int lineCurrentSymbolIndex = 0;
 
-                        for (; index < inputLine.length(); index++) {
-                            if (inputLine.charAt(index) == '"') {
-                                ++rowQueuesCount;
+                while (lineCurrentSymbolIndex < inputLine.length()) {
+                    char lineCurrentSymbol = inputLine.charAt(lineCurrentSymbolIndex);
+
+                    if (isRowCompleted) {
+                        if (lineCurrentSymbol != '"') {
+                            if (lineCurrentSymbol != ',') {
+                                bufferedWriter.write(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
+                            } else {
+                                bufferedWriter.write("</td>");
+                                bufferedWriter.newLine();
+                                bufferedWriter.write("\t\t\t\t<td>");
                             }
-
-                            if (((inputLine.charAt(index) == ',') || index == inputLine.length() - 1) && (rowQueuesCount % 2 == 0)) {
-                                endCellIndex = index;
-
-                                isRowCompleted = true;
-                                rowQueuesCount = 0;
-
-                                break;
-                            }
-                        }
-
-                        if (endCellIndex < 0) {
-                            isRowCompleted = false;
-
-                            cell = inputLine.substring(startCellIndex);
-                            bufferedWriter.write(getHtmlCellFromCsvCell(cell));
-
-                            bufferedWriter.write("<br/>");
-
-                            break;
-                        }
-
-                        if (inputLine.charAt(index) == ',') {
-                            cell = inputLine.substring(startCellIndex, endCellIndex - 1);
                         } else {
-                            cell = inputLine.substring(startCellIndex, endCellIndex);
+                            isRowCompleted = false;
+                        }
+                    } else {
+                        if (lineCurrentSymbol != '"') {
+                            bufferedWriter.write(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
+                        } else {
+                            char lineNextSymbol = ' ';
+
+                            if (lineCurrentSymbolIndex + 1 < inputLine.length()) {
+                                lineNextSymbol = inputLine.charAt(lineCurrentSymbolIndex + 1);
+                            }
+
+                            if (lineNextSymbol != '"') {
+                                isRowCompleted = true;
+                            } else {
+                                bufferedWriter.write(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
+
+                                ++lineCurrentSymbolIndex;
+                            }
                         }
                     }
 
-                    bufferedWriter.write(getHtmlCellFromCsvCell(cell));
-                    bufferedWriter.write("</td>");
-
-                    startCellIndex = endCellIndex + 1;
-
-                    if (startCellIndex >= inputLine.length()) {
-                        if (inputLine.charAt(endCellIndex) == ',') {
-                            bufferedWriter.newLine();
-                            bufferedWriter.write("\t\t\t\t<td></td>");
-                        }
-
+                    if (isRowCompleted && lineCurrentSymbolIndex >= inputLine.length() - 1) {
+                        bufferedWriter.write("</td>");
                         bufferedWriter.newLine();
                         bufferedWriter.write("\t\t\t</tr>");
                     }
+
+                    ++lineCurrentSymbolIndex;
                 }
             }
-*/
+
             bufferedWriter.newLine();
             bufferedWriter.write("\t\t</table>");
             bufferedWriter.newLine();
@@ -173,9 +119,13 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        String folderPath = "CSV/src/ru/academits/smolenskaya/files/";
-        String inputFilePath = folderPath + "input.csv";
-        String outputFilePath = folderPath + "output.html";
+        if (args.length < 3) {
+            throw new IllegalArgumentException("Arguments count = " + args.length + ": arguments count must be = 3");
+        }
+
+        String folderPath = args[0];
+        String inputFilePath = folderPath + args[1];
+        String outputFilePath = folderPath + args[2];
 
         gettingHtmlTableFromCsvTable(inputFilePath, outputFilePath);
     }
