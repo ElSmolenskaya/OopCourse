@@ -44,11 +44,11 @@ public class Main {
 
         System.out.println();
 
-        Map<String, Double> averageAgeByPersons = persons.stream()
-                .collect(Collectors.groupingBy(Person::getName, Collectors.averagingDouble(Person::getAge)));
+        Map<String, Double> averageAgesByPersonName = persons.stream()
+                .collect(Collectors.groupingBy(Person::getName, Collectors.averagingInt(Person::getAge)));
 
         System.out.println("Средний возраст людей в разрезе имен:");
-        averageAgeByPersons.forEach((name, age) -> System.out.printf("%15s - %-5.2f%n", name, age));
+        averageAgesByPersonName.forEach((name, age) -> System.out.printf("%15s - %-5.2f%n", name, age));
 
         System.out.println();
 
