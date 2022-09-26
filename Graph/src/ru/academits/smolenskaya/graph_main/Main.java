@@ -6,24 +6,34 @@ import java.util.function.Consumer;
 
 public class Main {
     public static void main(String[] args) {
-        Graph graph = new Graph(7);
+        int size = 11;
 
-        graph.setEdge(0, 1);
-        graph.setEdge(1, 2);
-        graph.setEdge(1, 3);
-        graph.setEdge(1, 4);
-        graph.setEdge(1, 5);
-        graph.setEdge(2, 6);
-        graph.setEdge(4, 5);
-        graph.setEdge(5, 6);
+        double[][] edges = new double[size][size];
+
+        edges[0][1] = 1;
+        edges[1][2] = 1;
+        edges[1][3] = 1;
+        edges[1][4] = 1;
+        edges[1][5] = 1;
+        edges[2][6] = 1;
+        edges[4][5] = 1;
+
+        Graph graph = new Graph(edges);
+
+        graph.setEdge(5, 6, 1);
 
         System.out.println("Обход графа в глубину:");
         Consumer<Integer> printNumber = number -> System.out.printf("%d, ", number);
-        graph.depthTraverse(printNumber);
+        graph.traverseInDepth(printNumber);
+
+        System.out.println();
+
+        System.out.println("Рекурсивный обход графа в глубину:");
+        graph.recursiveTraverseInDepth(printNumber);
 
         System.out.println();
 
         System.out.println("Обход графа в ширину:");
-        graph.widthTraverse(printNumber);
+        graph.traverseInWidth(printNumber);
     }
 }

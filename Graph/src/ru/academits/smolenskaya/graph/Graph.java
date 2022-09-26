@@ -1,56 +1,66 @@
 package ru.academits.smolenskaya.graph;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class Graph {
-    private final int[][] edges;
+    private final double[][] edges;
 
-    public Graph(int size) {
-        if (size <= 0) {
-            throw new IllegalArgumentException("Size = " + size + ": size must be > 0");
+    public Graph(double[][] edges) {
+        if (edges.length == 0) {
+            throw new IllegalArgumentException("Edges.length = " + edges.length + ": nodes count must be > 0");
         }
 
-        edges = new int[size][size];
-    }
-
-    public void setEdge(int node1, int node2) {
-        if (node1 < 0 || node1 >= edges.length) {
-            throw new IllegalArgumentException("Node1 = " + node1 + ": node1 must be >= 0 and < " + edges.length);
+        if (edges[0].length == 0) {
+            throw new IllegalArgumentException("Edges[0].length = " + edges[0].length + ": nodes count must be > 0");
         }
 
-        if (node2 < 0 || node2 >= edges.length) {
-            throw new IllegalArgumentException("Node2 = " + node2 + ": node2 must be >= 0 and < " + edges.length);
-        }
+        this.edges = new double[edges.length][edges[0].length];
 
-        if (node1 != node2) {
-            edges[node1][node2] = 1;
-            edges[node2][node1] = 1;
+        for (int i = 0; i < edges.length; i++) {
+            this.edges[i] = Arrays.copyOf(edges[i], edges[i].length);
         }
     }
 
-    public void widthTraverse(Consumer<Integer> consumer) {
+    @SuppressWarnings("unused")
+    public void setEdge(int nodeIndex1, int nodeIndex2, double edgeWeight) {
+        if (nodeIndex1 < 0 || nodeIndex1 >= edges.length) {
+            throw new IllegalArgumentException("NodeIndex1 = " + nodeIndex1 + ": nodeIndex1 must be >= 0 and < " + edges.length);
+        }
+
+        if (nodeIndex2 < 0 || nodeIndex2 >= edges.length) {
+            throw new IllegalArgumentException("NodeIndex2 = " + nodeIndex2 + ": nodeIndex2 must be >= 0 and < " + edges.length);
+        }
+
+        if (nodeIndex1 != nodeIndex2) {
+            edges[nodeIndex1][nodeIndex2] = edgeWeight;
+        }
+    }
+
+    public void traverseInWidth(Consumer<Integer> consumer) {
         boolean[] visited = new boolean[edges.length];
+
+        Queue<Integer> queue = new LinkedList<>();
 
         for (int i = 0; i < visited.length; i++) {
             if (!visited[i]) {
-                Queue<Integer> queue = new LinkedList<>();
-
                 queue.add(i);
 
                 while (!queue.isEmpty()) {
-                    int j = queue.remove();
+                    int nodeIndex1 = queue.remove();
 
-                    if (!visited[j]) {
-                        consumer.accept(j);
+                    if (!visited[nodeIndex1]) {
+                        consumer.accept(nodeIndex1);
 
-                        visited[j] = true;
+                        visited[nodeIndex1] = true;
 
-                        for (int k = j + 1; k < edges.length; k++) {
-                            if (edges[j][k] != 0 && !visited[k]) {
-                                queue.add(k);
+                        for (int nodeIndex2 = 0; nodeIndex2 < edges.length; nodeIndex2++) {
+                            if (edges[nodeIndex1][nodeIndex2] != 0 && !visited[nodeIndex2]) {
+                                queue.add(nodeIndex2);
                             }
                         }
                     }
@@ -59,30 +69,52 @@ public class Graph {
         }
     }
 
-    public void depthTraverse(Consumer<Integer> consumer) {
+    public void traverseInDepth(Consumer<Integer> consumer) {
         boolean[] visited = new boolean[edges.length];
+
+        Deque<Integer> stack = new LinkedList<>();
 
         for (int i = 0; i < visited.length; i++) {
             if (!visited[i]) {
-                Deque<Integer> stack = new LinkedList<>();
-
                 stack.addLast(i);
 
                 while (!stack.isEmpty()) {
-                    int j = stack.removeLast();
+                    int nodeIndex1 = stack.removeLast();
 
-                    if (!visited[j]) {
-                        consumer.accept(j);
+                    if (!visited[nodeIndex1]) {
+                        consumer.accept(nodeIndex1);
 
-                        visited[j] = true;
+                        visited[nodeIndex1] = true;
 
-                        for (int k = j + 1; k < edges.length; k++) {
-                            if (edges[j][k] != 0 && !visited[k]) {
-                                stack.addLast(k);
+                        for (int nodeIndex2 = edges.length - 1; nodeIndex2 >= 0; nodeIndex2--) {
+                            if (edges[nodeIndex1][nodeIndex2] != 0 && !visited[nodeIndex2]) {
+                                stack.addLast(nodeIndex2);
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private void visitNode(int nodeIndex, boolean[] visited, Consumer<Integer> consumer) {
+        consumer.accept(nodeIndex);
+
+        visited[nodeIndex] = true;
+
+        for (int nextNodeIndex = 0; nextNodeIndex < edges.length; nextNodeIndex++) {
+            if (edges[nodeIndex][nextNodeIndex] != 0 && !visited[nextNodeIndex]) {
+                visitNode(nextNodeIndex, visited, consumer);
+            }
+        }
+    }
+
+    public void recursiveTraverseInDepth(Consumer<Integer> consumer) {
+        boolean[] visited = new boolean[edges.length];
+
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i]) {
+                visitNode(i, visited, consumer);
             }
         }
     }
