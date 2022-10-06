@@ -11,6 +11,10 @@ public class Temperature {
     private static final double CELSIUS_FAHRENHEIT_DEGREES_COEFFICIENT = 1.8;
     private static final double FAHRENHEIT_KELVIN_DEGREES_COEFFICIENT = 5.0 / 9;
 
+    public enum Scale {
+        CELSIUS, KELVIN, FAHRENHEIT
+    }
+
     public double getCelsiusDegrees() {
         return celsiusDegrees;
     }
@@ -27,6 +31,7 @@ public class Temperature {
         this.celsiusDegrees = celsiusDegrees;
 
         fahrenheitDegrees = celsiusDegrees * CELSIUS_FAHRENHEIT_DEGREES_COEFFICIENT + CELSIUS_FAHRENHEIT_DEGREES_DIFFERENCE;
+
         kelvinDegrees = celsiusDegrees + CELSIUS_KELVIN_DEGREES_DIFFERENCE;
     }
 

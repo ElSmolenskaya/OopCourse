@@ -1,5 +1,7 @@
 package ru.academits.smolenskaya.temperature_view;
 
+import ru.academits.smolenskaya.temperature_model.Temperature;
+
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
@@ -9,48 +11,40 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame temperatureFrame = new JFrame("Temperature conversion");
-            temperatureFrame.setSize(250, 110);
-            temperatureFrame.setResizable(false);
+            temperatureFrame.setSize(270, 130);
             temperatureFrame.setLocationRelativeTo(null);
             temperatureFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             temperatureFrame.setVisible(true);
 
-            GridBagLayout temperatureGridBagLayout = new GridBagLayout();
-            temperatureFrame.setLayout(temperatureGridBagLayout);
+            GridBagLayout gridBagLayout = new GridBagLayout();
+            temperatureFrame.setLayout(gridBagLayout);
 
-            GridBagConstraints temperatureGridBagConstraints = new GridBagConstraints();
-            temperatureGridBagConstraints.anchor = GridBagConstraints.CENTER;
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
+            gridBagConstraints.fill = GridBagConstraints.BOTH;
 
-            String[] items = {
-                    "Celsius",
-                    "Kelvin",
-                    "Fahrenheit"
-            };
-            //////////////////////////////////////////
-            JComboBox temperatureFromComboBox = new JComboBox(items);
+            JComboBox temperatureFromComboBox = new JComboBox(Temperature.Scale.values());
             temperatureFromComboBox.setVisible(true);
-            temperatureFrame.add(temperatureFromComboBox);
 
-            temperatureGridBagConstraints.insets = new Insets(1, 1, 0, 1);
-            temperatureGridBagConstraints.gridx = 0;
-            temperatureGridBagConstraints.gridy = 0;
-            temperatureGridBagLayout.setConstraints(temperatureFromComboBox, temperatureGridBagConstraints);
-            //////////////////////////////////////////
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+
+            temperatureFrame.add(temperatureFromComboBox, gridBagConstraints);
+
             NumberFormat temperatureNumberFormat = NumberFormat.getNumberInstance();
             temperatureNumberFormat.setMaximumFractionDigits(4);
 
             JFormattedTextField temperatureFromFormattedTextField = new JFormattedTextField(new NumberFormatter(temperatureNumberFormat));
-            temperatureFromFormattedTextField.setEditable(true);
-            temperatureGridBagConstraints.anchor = GridBagConstraints.CENTER;
             temperatureFromFormattedTextField.setPreferredSize(new Dimension(120, temperatureFromComboBox.getPreferredSize().height));
-            temperatureFrame.add(temperatureFromFormattedTextField);
+            temperatureFromFormattedTextField.setEditable(true);
 
-            temperatureGridBagConstraints.gridx = 1;
-            temperatureGridBagConstraints.gridy = 0;
-            temperatureGridBagLayout.setConstraints(temperatureFromFormattedTextField, temperatureGridBagConstraints);
-            //////////////////////////////////////////
-            JButton conversingButton = new JButton("Convert");
-            conversingButton.setPreferredSize(new Dimension(237, 20));
+            gridBagConstraints.gridx = 1;
+            gridBagConstraints.gridy = 0;
+
+            temperatureFrame.add(temperatureFromFormattedTextField, gridBagConstraints);
+
+            /*JButton conversingButton = new JButton("Convert");
+            //conversingButton.setPreferredSize(new Dimension(247, 20));
             temperatureFrame.add(conversingButton);
 
             temperatureGridBagConstraints.gridwidth = 2;
@@ -58,26 +52,26 @@ public class Main {
             temperatureGridBagConstraints.gridy = 1;
             temperatureGridBagLayout.setConstraints(conversingButton, temperatureGridBagConstraints);
             /////////////////////////////////////////
-            JComboBox temperatureToComboBox = new JComboBox(items);
+            JComboBox temperatureToComboBox = new JComboBox(Temperature.Scale.values());
             temperatureToComboBox.setVisible(true);
             temperatureFrame.add(temperatureToComboBox);
 
             temperatureGridBagConstraints.gridx = 0;
             temperatureGridBagConstraints.gridy = 2;
-            temperatureGridBagConstraints.insets = new Insets(3, 1, 0, 1);
-            temperatureGridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
+            //temperatureGridBagConstraints.insets = new Insets(3, 1, 0, 1);
+            //temperatureGridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
             temperatureGridBagLayout.setConstraints(temperatureToComboBox, temperatureGridBagConstraints);
 
             ////////////////
             JFormattedTextField temperatureToFormattedTextField = new JFormattedTextField(new NumberFormatter(temperatureNumberFormat));
             temperatureToFormattedTextField.setEditable(false);
-            temperatureGridBagConstraints.anchor = GridBagConstraints.CENTER;
+            //temperatureGridBagConstraints.anchor = GridBagConstraints.CENTER;
             temperatureToFormattedTextField.setPreferredSize(new Dimension(temperatureFromFormattedTextField.getPreferredSize().width, temperatureFromFormattedTextField.getPreferredSize().height));
             temperatureFrame.add(temperatureToFormattedTextField);
 
             temperatureGridBagConstraints.gridx = 1;
             temperatureGridBagConstraints.gridy = 2;
-            temperatureGridBagLayout.setConstraints(temperatureToFormattedTextField, temperatureGridBagConstraints);
+            temperatureGridBagLayout.setConstraints(temperatureToFormattedTextField, temperatureGridBagConstraints);*/
         });
     }
 }
