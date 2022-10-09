@@ -11,12 +11,20 @@ public class Main {
         double[][] edges = new double[size][size];
 
         edges[0][1] = 1;
-        edges[1][2] = 1;
-        edges[1][3] = 1;
-        edges[1][4] = 1;
-        edges[1][5] = 1;
-        edges[2][6] = 1;
-        edges[4][5] = 1;
+        edges[9][1] = 1;
+        edges[10][1] = 1;
+        edges[9][0] = 1;
+        edges[9][10] = 1;
+        edges[7][8] = 1;
+        edges[7][9] = 1;
+        edges[6][2] = 1;
+        edges[6][3] = 1;
+        edges[6][4] = 1;
+        edges[6][5] = 1;
+        edges[5][2] = 1;
+        edges[2][4] = 1;
+        edges[2][3] = 1;
+        edges[10][0] = 1;
 
         Graph graph = new Graph(edges);
 

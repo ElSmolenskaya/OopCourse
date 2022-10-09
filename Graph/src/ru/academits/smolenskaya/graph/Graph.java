@@ -34,7 +34,7 @@ public class Graph {
             throw new IllegalArgumentException("Size = " + size + ": size must be > 0");
         }
 
-        this.edges = new double[size][size];
+        edges = new double[size][size];
     }
 
     @SuppressWarnings("unused")
@@ -61,6 +61,8 @@ public class Graph {
             if (!visited[i]) {
                 queue.add(i);
 
+                visited[i] = true;
+
                 while (!queue.isEmpty()) {
                     int node1Index = queue.remove();
 
@@ -86,6 +88,8 @@ public class Graph {
         for (int i = 0; i < visited.length; i++) {
             if (!visited[i]) {
                 stack.addLast(i);
+
+                visited[i] = true;
 
                 while (!stack.isEmpty()) {
                     int node1Index = stack.removeLast();
