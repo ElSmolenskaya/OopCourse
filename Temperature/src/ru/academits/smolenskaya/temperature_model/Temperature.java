@@ -1,9 +1,8 @@
 package ru.academits.smolenskaya.temperature_model;
 
 public class Temperature {
-    private double celsiusDegrees;
-    private double kelvinDegrees;
-    private double fahrenheitDegrees;
+    private double degrees;
+    private Scale scale;
 
     private static final double CELSIUS_KELVIN_DEGREES_DIFFERENCE = 273.15;
     private static final int CELSIUS_FAHRENHEIT_DEGREES_DIFFERENCE = 32;
@@ -15,39 +14,38 @@ public class Temperature {
         CELSIUS, KELVIN, FAHRENHEIT
     }
 
-    public double getCelsiusDegrees() {
-        return celsiusDegrees;
+    public Temperature() {
+        scale = Scale.CELSIUS;
     }
 
-    public double getKelvinDegrees() {
-        return kelvinDegrees;
+    public void setScale(Scale scale) {
+        this.scale = scale;
     }
 
-    public double getFahrenheitDegrees() {
-        return fahrenheitDegrees;
+    public void setDegrees(double degrees) {
+        this.degrees = degrees;
     }
 
-    public void setCelsiusDegrees(double celsiusDegrees) {
-        this.celsiusDegrees = celsiusDegrees;
-
-        fahrenheitDegrees = celsiusDegrees * CELSIUS_FAHRENHEIT_DEGREES_COEFFICIENT + CELSIUS_FAHRENHEIT_DEGREES_DIFFERENCE;
-
-        kelvinDegrees = celsiusDegrees + CELSIUS_KELVIN_DEGREES_DIFFERENCE;
-    }
-
-    public void setFahrenheitDegrees(double fahrenheitDegrees) {
-        this.fahrenheitDegrees = fahrenheitDegrees;
-
-        celsiusDegrees = (fahrenheitDegrees - CELSIUS_FAHRENHEIT_DEGREES_DIFFERENCE) / CELSIUS_FAHRENHEIT_DEGREES_COEFFICIENT;
-
-        kelvinDegrees = (fahrenheitDegrees + FAHRENHEIT_KELVIN_DEGREES_DIFFERENCE) * FAHRENHEIT_KELVIN_DEGREES_COEFFICIENT;
-    }
-
-    public void setKelvinDegrees(double kelvinDegrees) {
-        this.kelvinDegrees = kelvinDegrees;
-
-        celsiusDegrees = kelvinDegrees - CELSIUS_KELVIN_DEGREES_DIFFERENCE;
-
-        fahrenheitDegrees = kelvinDegrees / FAHRENHEIT_KELVIN_DEGREES_COEFFICIENT - FAHRENHEIT_KELVIN_DEGREES_DIFFERENCE;
+    public double getDegrees(Scale scaleTo) {
+        return switch (scale) {
+            case CELSIUS -> switch (scaleTo) {
+                case CELSIUS -> degrees;
+                case KELVIN -> degrees + CELSIUS_KELVIN_DEGREES_DIFFERENCE;
+                case FAHRENHEIT ->
+                        degrees * CELSIUS_FAHRENHEIT_DEGREES_COEFFICIENT + CELSIUS_FAHRENHEIT_DEGREES_DIFFERENCE;
+            };
+            case KELVIN -> switch (scaleTo) {
+                case CELSIUS -> degrees - CELSIUS_KELVIN_DEGREES_DIFFERENCE;
+                case KELVIN -> degrees;
+                case FAHRENHEIT ->
+                        degrees / FAHRENHEIT_KELVIN_DEGREES_COEFFICIENT - FAHRENHEIT_KELVIN_DEGREES_DIFFERENCE;
+            };
+            case FAHRENHEIT -> switch (scaleTo) {
+                case CELSIUS ->
+                        (degrees - CELSIUS_FAHRENHEIT_DEGREES_DIFFERENCE) / CELSIUS_FAHRENHEIT_DEGREES_COEFFICIENT;
+                case KELVIN -> (degrees + FAHRENHEIT_KELVIN_DEGREES_DIFFERENCE) * FAHRENHEIT_KELVIN_DEGREES_COEFFICIENT;
+                case FAHRENHEIT -> degrees;
+            };
+        };
     }
 }
