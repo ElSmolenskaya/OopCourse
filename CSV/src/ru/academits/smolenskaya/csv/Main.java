@@ -12,8 +12,11 @@ public class Main {
         };
     }
 
-    public static void convertCsvTableToHtmlTable(BufferedReader bufferedReader, PrintWriter printWriter) throws IOException {
-        printWriter.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">");
+    public static void convertCsvTableToHtmlTable(String inputFilePath, String outputFilePath) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath));
+        PrintWriter printWriter = new PrintWriter(new FileWriter(outputFilePath));
+
+        printWriter.println("<!DOCTYPE html>");
         printWriter.println("<html>");
         printWriter.println("\t<head>");
         printWriter.println("\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
@@ -92,11 +95,14 @@ public class Main {
         printWriter.println("\t\t</table>");
         printWriter.println("\t</body>");
         printWriter.print("</html>");
+
+        printWriter.close();
+        bufferedReader.close();
     }
 
     public static void main(String[] args) {
-        if (args.length < 2) {
-            System.out.printf("Arguments count = %s: arguments count must be >= 2.%n", args.length);
+        if (args.length != 2) {
+            System.out.printf("Arguments count = %s: arguments count must be = 2.%n", args.length);
             System.out.print("First argument must contain full path to csv-fail. Second argument must contain full path to the folder " +
                     "where a new html-file will be created.");
 
@@ -106,11 +112,10 @@ public class Main {
         String inputFilePath = args[0];
         String outputFilePath = args[1];
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath));
-             PrintWriter printWriter = new PrintWriter(new FileWriter(outputFilePath))) {
-            convertCsvTableToHtmlTable(bufferedReader, printWriter);
+        try {
+            convertCsvTableToHtmlTable(inputFilePath, outputFilePath);
         } catch (IOException e) {
-            System.out.printf("Ошибка при попытке чтения файла %s и записи в файл %s: %s", outputFilePath, inputFilePath, e.getMessage());
+            System.out.printf("An error occurred when reading file %s and writing file %s: %s", outputFilePath, inputFilePath, e.getMessage());
         }
     }
 }
