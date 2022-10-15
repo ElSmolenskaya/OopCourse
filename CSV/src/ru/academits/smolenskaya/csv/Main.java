@@ -13,91 +13,89 @@ public class Main {
     }
 
     public static void convertCsvTableToHtmlTable(String inputFilePath, String outputFilePath) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath));
-        PrintWriter printWriter = new PrintWriter(new FileWriter(outputFilePath));
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath));
+             PrintWriter printWriter = new PrintWriter(new FileWriter(outputFilePath))) {
 
-        printWriter.println("<!DOCTYPE html>");
-        printWriter.println("<html>");
-        printWriter.println("\t<head>");
-        printWriter.println("\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
-        printWriter.println("\t\t<title>Таблица из csv-документа</title>");
-        printWriter.println("\t</head>");
-        printWriter.println("\t<body>");
-        printWriter.println("\t\t<table>");
+            printWriter.println("<!DOCTYPE html>");
+            printWriter.println("<html>");
+            printWriter.println("\t<head>");
+            printWriter.println("\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
+            printWriter.println("\t\t<title>Таблица из csv-документа</title>");
+            printWriter.println("\t</head>");
+            printWriter.println("\t<body>");
+            printWriter.println("\t\t<table>");
 
-        String inputLine;
+            String inputLine;
 
-        boolean isRowCompleted = true;
+            boolean isRowCompleted = true;
 
-        while ((inputLine = bufferedReader.readLine()) != null) {
-            if (inputLine.isEmpty()) {
-                if (isRowCompleted) {
-                    printWriter.println("\t\t\t<tr>");
-                    printWriter.println("\t\t\t\t<td></td>");
-                    printWriter.println("\t\t\t</tr>");
-                } else {
-                    printWriter.print("<br/>");
-                }
-            } else {
-                if (isRowCompleted) {
-                    printWriter.println("\t\t\t<tr>");
-                    printWriter.print("\t\t\t\t<td>");
-                } else {
-                    printWriter.print("<br/>");
-                }
-            }
-
-            int lineCurrentSymbolIndex = 0;
-
-            while (lineCurrentSymbolIndex < inputLine.length()) {
-                char lineCurrentSymbol = inputLine.charAt(lineCurrentSymbolIndex);
-
-                if (isRowCompleted) {
-                    if (lineCurrentSymbol != '"') {
-                        if (lineCurrentSymbol != ',') {
-                            printWriter.print(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
-                        } else {
-                            printWriter.println("</td>");
-                            printWriter.print("\t\t\t\t<td>");
-                        }
+            while ((inputLine = bufferedReader.readLine()) != null) {
+                if (inputLine.isEmpty()) {
+                    if (isRowCompleted) {
+                        printWriter.println("\t\t\t<tr>");
+                        printWriter.println("\t\t\t\t<td></td>");
+                        printWriter.println("\t\t\t</tr>");
                     } else {
-                        isRowCompleted = false;
+                        printWriter.print("<br/>");
                     }
                 } else {
-                    if (lineCurrentSymbol != '"') {
-                        printWriter.print(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
+                    if (isRowCompleted) {
+                        printWriter.println("\t\t\t<tr>");
+                        printWriter.print("\t\t\t\t<td>");
                     } else {
-                        char lineNextSymbol = ' ';
-
-                        if (lineCurrentSymbolIndex + 1 < inputLine.length()) {
-                            lineNextSymbol = inputLine.charAt(lineCurrentSymbolIndex + 1);
-                        }
-
-                        if (lineNextSymbol != '"') {
-                            isRowCompleted = true;
-                        } else {
-                            printWriter.print(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
-
-                            ++lineCurrentSymbolIndex;
-                        }
+                        printWriter.print("<br/>");
                     }
                 }
 
-                if (isRowCompleted && lineCurrentSymbolIndex >= inputLine.length() - 1) {
-                    printWriter.println("</td>");
-                    printWriter.println("\t\t\t</tr>");
-                }
+                int lineCurrentSymbolIndex = 0;
 
-                ++lineCurrentSymbolIndex;
+                while (lineCurrentSymbolIndex < inputLine.length()) {
+                    char lineCurrentSymbol = inputLine.charAt(lineCurrentSymbolIndex);
+
+                    if (isRowCompleted) {
+                        if (lineCurrentSymbol != '"') {
+                            if (lineCurrentSymbol != ',') {
+                                printWriter.print(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
+                            } else {
+                                printWriter.println("</td>");
+                                printWriter.print("\t\t\t\t<td>");
+                            }
+                        } else {
+                            isRowCompleted = false;
+                        }
+                    } else {
+                        if (lineCurrentSymbol != '"') {
+                            printWriter.print(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
+                        } else {
+                            char lineNextSymbol = ' ';
+
+                            if (lineCurrentSymbolIndex + 1 < inputLine.length()) {
+                                lineNextSymbol = inputLine.charAt(lineCurrentSymbolIndex + 1);
+                            }
+
+                            if (lineNextSymbol != '"') {
+                                isRowCompleted = true;
+                            } else {
+                                printWriter.print(getHtmlSymbolsFromCsvSymbol(lineCurrentSymbol));
+
+                                ++lineCurrentSymbolIndex;
+                            }
+                        }
+                    }
+
+                    if (isRowCompleted && lineCurrentSymbolIndex >= inputLine.length() - 1) {
+                        printWriter.println("</td>");
+                        printWriter.println("\t\t\t</tr>");
+                    }
+
+                    ++lineCurrentSymbolIndex;
+                }
             }
+
+            printWriter.println("\t\t</table>");
+            printWriter.println("\t</body>");
+            printWriter.print("</html>");
         }
-
-        printWriter.println("\t\t</table>");
-        printWriter.println("\t</body>");
-        printWriter.print("</html>");
-
-        printWriter.close();
-        bufferedReader.close();
     }
 
     public static void main(String[] args) {
