@@ -72,6 +72,8 @@ public class MinesweeperFrame implements MinesweeperModelSubscriber {
 
                 buttonsArray[i][j].addMouseListener(new MouseAdapter() {
                     public void mousePressed(MouseEvent e) {
+                        //JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), e.getButton());
+
                         if (e.getButton() == MouseEvent.BUTTON3) {
                             setNextCellStatus(finalI, finalJ);
                         } else if (e.getButton() == MouseEvent.BUTTON1) {
@@ -80,25 +82,10 @@ public class MinesweeperFrame implements MinesweeperModelSubscriber {
                             minesweeperController.checkCell(minesweeperModel, finalI, finalJ);
                         }
                     }
-
-                    public void mouseEntered(MouseEvent e) {
-                        if (e.getButton() == MouseEvent.BUTTON2) {
-                            minesweeperController.checkCell(minesweeperModel, finalI, finalJ);
-                        }
-                    }
                 });
 
 
                 gameFieldPanel.add(buttonsArray[i][j]);
-
-                gameFieldPanel.addMouseListener(new MouseAdapter() {
-                    public void mouseEntered(MouseEvent e) {
-                        if (e.getButton() == MouseEvent.BUTTON2) {
-                            minesweeperController.checkCell(minesweeperModel,e.getY(), e.getX());
-                        }
-                    }
-
-                });
             }
         }
 
