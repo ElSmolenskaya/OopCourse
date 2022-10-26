@@ -9,8 +9,12 @@ import java.util.concurrent.TimeUnit;
 class Timer {
     private int secondsCount;
     ScheduledExecutorService scheduler;
-    private final int maxSecondsCount = 1000;
+    private final int maximumSecondsCount;
     private final Collection<TimerSubscriber> subscribers = new CopyOnWriteArrayList<>();
+
+    public Timer(int maximumSecondsCount) {
+        this.maximumSecondsCount = maximumSecondsCount;
+    }
 
     public int getSecondsCount() {
         return secondsCount;
@@ -22,10 +26,10 @@ class Timer {
         Runnable runnable = () -> {
             notifySubscribers();
 
-            ++secondsCount;
-
-            if (secondsCount >= maxSecondsCount) {
-                scheduler.shutdown();
+            if (secondsCount < maximumSecondsCount) {
+                ++secondsCount;
+            } else {
+                stop();
             }
         };
 

@@ -15,6 +15,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
     private final int levelIndex;
     private int needToOpenCellsCount;
     private int markedAsMinedCellsCount;
+    private final int maximumSecondsCount = 999;
     private final Timer timer;
     private final HighScoresTable highScoresTable;
     private final Collection<MinesweeperSubscriber> subscribers = new CopyOnWriteArrayList<>();
@@ -44,7 +45,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
 
         gameState = GameState.NEW;
 
-        timer = new Timer();
+        timer = new Timer(maximumSecondsCount);
         timer.subscribe(this);
 
         highScoresTable = new HighScoresTable(levelIndex);
@@ -416,7 +417,8 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
 
         notifySubscribersModelChanged();
 
-        if (gameState == GameState.IS_WON && highScoresTable.isScoreNeedToAdd(timer.getSecondsCount())) {
+        if (gameState == GameState.IS_WON && timer.getSecondsCount() < maximumSecondsCount
+                && highScoresTable.isScoreNeedToAdd(timer.getSecondsCount())) {
             for (final MinesweeperSubscriber subscriber : subscribers) {
                 assert subscriber != null;
 
