@@ -1,7 +1,7 @@
 package ru.academits.smolenskaya.minesweeper.controller;
 
-import ru.academits.smolenskaya.minesweeper.model.MinesweeperModel;
 import ru.academits.smolenskaya.minesweeper.model.Minesweeper;
+import ru.academits.smolenskaya.minesweeper.model.MinesweeperModel;
 
 public class MinesweeperController {
     public static void openCell(Minesweeper minesweeperModel, int rowNumber, int columnNumber) {
