@@ -1,6 +1,7 @@
 package ru.academits.smolenskaya.temperature_converter.view;
 
-import ru.academits.smolenskaya.temperature_converter.model.*;
+import ru.academits.smolenskaya.temperature_converter.model.TemperatureConverter;
+import ru.academits.smolenskaya.temperature_converter.model.TemperatureScale;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,17 +9,16 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class TemperatureConverterFrame {
-    private final String[] temperatureScales;
+    private final TemperatureScale[] temperatureScales;
     private final TemperatureConverter temperatureConverter;
 
-    public TemperatureConverterFrame(TemperatureConverter temperatureConverter, String[] temperatureScales) throws RuntimeException {
+    public TemperatureConverterFrame(TemperatureConverter temperatureConverter, TemperatureScale[] temperatureScales) throws RuntimeException {
         this.temperatureConverter = temperatureConverter;
         this.temperatureScales = temperatureScales;
 
@@ -71,7 +71,13 @@ public class TemperatureConverterFrame {
         gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
         gridBagConstraints.fill = GridBagConstraints.BOTH;
 
-        JComboBox<String> scaleFromComboBox = new JComboBox<>(temperatureScales);
+        String[] temperatureScalesNames = new String[temperatureScales.length];
+
+        for (int i = 0; i < temperatureScales.length; i++) {
+            temperatureScalesNames[i] = temperatureScales[i].toString();
+        }
+
+        JComboBox<String> scaleFromComboBox = new JComboBox<>(temperatureScalesNames);
         scaleFromComboBox.setVisible(true);
 
         gridBagConstraints.gridx = 0;
@@ -98,7 +104,7 @@ public class TemperatureConverterFrame {
 
         temperatureConverterFrame.add(conversingButton, gridBagConstraints);
 
-        JComboBox<String> scaleToComboBox = new JComboBox<>(temperatureScales);
+        JComboBox<String> scaleToComboBox = new JComboBox<>(temperatureScalesNames);
         scaleToComboBox.setVisible(true);
         scaleToComboBox.setSelectedIndex(1);
 
@@ -124,24 +130,10 @@ public class TemperatureConverterFrame {
 
             degreesFromTextField.setText(getFormattedNumberString(degreesFromTextField.getText()));
 
-            String scaleFrom = Objects.requireNonNull(scaleFromComboBox.getSelectedItem()).toString();
-            String scaleTo = Objects.requireNonNull(scaleToComboBox.getSelectedItem()).toString();
+            TemperatureScale scaleFrom = temperatureScales[scaleFromComboBox.getSelectedIndex()];
+            TemperatureScale scaleTo = temperatureScales[scaleToComboBox.getSelectedIndex()];
 
-            double degreesTo = 0;
-
-            try {
-                degreesTo = temperatureConverter.getTemperature(scaleFrom, scaleTo, degreesFrom);
-            } catch (ClassNotFoundException exception) {
-                JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "Class not found: " + exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (NoSuchMethodException exception) {
-                JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "No such method: " + exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (InvocationTargetException exception) {
-                JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "Invocation target: " + exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (InstantiationException exception) {
-                JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "Instantiation: " + exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (IllegalAccessException exception) {
-                JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "Illegal access: " + exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            double degreesTo = temperatureConverter.getTemperature(scaleFrom, scaleTo, degreesFrom);
 
             try {
                 degreesToTextField.setText(getFormattedNumberString(String.valueOf(degreesTo)));
