@@ -50,19 +50,18 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
             minesweeperFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             minesweeperFrame.setLayout(new GridBagLayout());
 
+            JMenuBar minesweeperMenuBar = getMainMenu();
+            minesweeperFrame.setJMenuBar(minesweeperMenuBar);
+
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
-            JMenuBar minesweeperMenuBar = getMainMenu();
+            JPanel gameStatePanel = getGameStatePanel();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 0;
-            minesweeperFrame.add(minesweeperMenuBar, gridBagConstraints);
-
-            JPanel gameStatePanel = getGameStatePanel();
-            gridBagConstraints.gridy = 1;
             minesweeperFrame.add(gameStatePanel, gridBagConstraints);
 
             JPanel gameFieldPanel = getGameFieldPanel();
-            gridBagConstraints.gridy = 2;
+            gridBagConstraints.gridy = 1;
             minesweeperFrame.add(gameFieldPanel, gridBagConstraints);
 
             minesweeperFrame.pack();
@@ -88,13 +87,35 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
                 int fixedJ = j;
 
                 buttonsArray[i][j].addMouseListener(new MouseAdapter() {
+                    private boolean isLeftButtonPressed = false;
+                    private boolean isRightButtonPressed = false;
+
+                    @Override
                     public void mousePressed(MouseEvent e) {
-                        if (e.getButton() == MouseEvent.BUTTON3) {
-                            setNextCellStatus(fixedI, fixedJ);
-                        } else if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1) {
-                            MinesweeperController.openCell(minesweeperModel, fixedI, fixedJ);
-                        } else if (e.getButton() == MouseEvent.BUTTON2 || (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2)) {
+                        if (e.getButton() == MouseEvent.BUTTON1) {
+                            isLeftButtonPressed = true;
+                        } else if (e.getButton() == MouseEvent.BUTTON3) {
+                            isRightButtonPressed = true;
+                        } else if (e.getButton() == MouseEvent.BUTTON2) {
                             MinesweeperController.checkCell(minesweeperModel, fixedI, fixedJ);
+                        }
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        if (isLeftButtonPressed && isRightButtonPressed) {
+                            MinesweeperController.checkCell(minesweeperModel, fixedI, fixedJ);
+
+                            isLeftButtonPressed = false;
+                            isRightButtonPressed = false;
+                        } else if (isLeftButtonPressed) {
+                            MinesweeperController.openCell(minesweeperModel, fixedI, fixedJ);
+
+                            isLeftButtonPressed = false;
+                        } else if (isRightButtonPressed) {
+                            setNextCellStatus(fixedI, fixedJ);
+
+                            isRightButtonPressed = false;
                         }
                     }
                 });
@@ -130,6 +151,7 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
             int fixedI = i;
 
             levelMenuItems[i].addMouseListener(new MouseAdapter() {
+                @Override
                 public void mousePressed(MouseEvent e) {
                     if (minesweeperModel.getCurrentLevelIndex() != fixedI) {
                         setModel(MinesweeperController.startNewGame(fixedI));
@@ -143,6 +165,7 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
         JMenuItem newGameMenuItem = new JMenuItem("New game");
 
         newGameMenuItem.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent e) {
                 setModel(MinesweeperController.startNewGame(minesweeperModel.getCurrentLevelIndex()));
                 timerTextField.setText(String.valueOf(minesweeperModel.getTimerSecondsCount()));
@@ -154,6 +177,7 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
         JMenuItem highScoresMenuItem = new JMenuItem("High scores");
 
         highScoresMenuItem.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent e) {
                 Object[][] highScoresList = minesweeperModel.getHighScoresTable();
 
@@ -171,6 +195,7 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
         mainMenu.add(aboutMenuItem);
 
         aboutMenuItem.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent e) {
                 showAboutDialog();
             }
@@ -181,6 +206,7 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
         JMenuItem exitMenuItem = new JMenuItem("Exit");
 
         exitMenuItem.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent e) {
                 showExitDialog();
             }

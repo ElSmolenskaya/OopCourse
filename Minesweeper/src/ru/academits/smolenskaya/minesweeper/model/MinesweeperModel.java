@@ -63,41 +63,6 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
                 minesFieldCells[i][j] = new MinesweeperCell(0);
             }
         }
-
-        int i = 0;
-
-        Random random = new Random();
-
-        while (i < minesCount) {
-            int rowNumber = random.nextInt(rowsCount);
-            int columnNumber = random.nextInt(columnsCount);
-
-            if (!minesFieldCells[rowNumber][columnNumber].isMined()) {
-                minesFieldCells[rowNumber][columnNumber].setMine();
-
-                ++i;
-            }
-        }
-
-        for (i = 0; i < rowsCount; i++) {
-            for (int j = 0; j < columnsCount; j++) {
-                if (!minesFieldCells[i][j].isMined()) {
-                    CellCoordinates[] extremeCellsCoordinates = getExtremeNeighbourCellsCoordinates(i, j);
-
-                    int cellMinesCount = 0;
-
-                    for (int k = extremeCellsCoordinates[0].rowNumber; k <= extremeCellsCoordinates[1].rowNumber; k++) {
-                        for (int l = extremeCellsCoordinates[0].columnNumber; l <= extremeCellsCoordinates[1].columnNumber; l++) {
-                            if (!(k == i && l == j) && minesFieldCells[k][l].isMined()) {
-                                cellMinesCount++;
-                            }
-                        }
-                    }
-
-                    minesFieldCells[i][j].setNeighboursMinesCount(cellMinesCount);
-                }
-            }
-        }
     }
 
     @Override
@@ -113,6 +78,8 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
         }
 
         if (gameState == GameState.NEW) {
+            setMines(rowNumber, columnNumber);
+
             gameState = GameState.IN_PROGRESS;
 
             timer.start();
@@ -168,11 +135,16 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
 
     @Override
     public void checkCell(int rowNumber, int columnNumber) {
-        if (gameState == GameState.IS_WON || gameState == GameState.IS_FAILED) {
+        if (gameState != GameState.IN_PROGRESS) {
             return;
         }
 
         checkCellIndexes(rowNumber, columnNumber);
+
+        if (minesFieldCells[rowNumber][columnNumber].getStatus() != MinesweeperCell.Status.OPENED ||
+                minesFieldCells[rowNumber][columnNumber].getNeighboursMinesCount() < 1) {
+            return;
+        }
 
         CellCoordinates[] extremeCellsCoordinates = getExtremeNeighbourCellsCoordinates(rowNumber, columnNumber);
 
@@ -190,7 +162,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
             }
         }
 
-        if (markedAsMinedCellsCount < minesFieldCells[rowNumber][columnNumber].getNeighboursMinesCount()) {
+        if (markedAsMinedCellsCount != minesFieldCells[rowNumber][columnNumber].getNeighboursMinesCount()) {
             return;
         }
 
@@ -332,7 +304,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
 
     @Override
     public void timerChanged() {
-        for (final MinesweeperSubscriber subscriber : subscribers) {
+        for (MinesweeperSubscriber subscriber : subscribers) {
             assert subscriber != null;
 
             subscriber.timerChanged();
@@ -384,6 +356,53 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
         return stringBuilder.toString();
     }
 
+    private void setMines(int startCellRowNumber, int startCellColumnNumber) {
+        int rowsCount = sizeConstantsByLevel[levelIndex].rowsCount;
+        int columnsCount = sizeConstantsByLevel[levelIndex].columnsCount;
+        int minesCount = sizeConstantsByLevel[levelIndex].minesCount;
+
+        int i = 0;
+
+        Random random = new Random();
+
+        CellCoordinates[] startCellExtremeCellsCoordinates = getExtremeNeighbourCellsCoordinates(startCellRowNumber, startCellColumnNumber);
+
+        while (i < minesCount) {
+            int rowNumber = random.nextInt(rowsCount);
+            int columnNumber = random.nextInt(columnsCount);
+
+            if (!minesFieldCells[rowNumber][columnNumber].isMined() &&
+                    (rowNumber < startCellExtremeCellsCoordinates[0].rowNumber ||
+                            rowNumber > startCellExtremeCellsCoordinates[1].rowNumber ||
+                            columnNumber < startCellExtremeCellsCoordinates[0].columnNumber ||
+                            columnNumber > startCellExtremeCellsCoordinates[1].columnNumber)) {
+                minesFieldCells[rowNumber][columnNumber].setMine();
+
+                ++i;
+            }
+        }
+
+        for (i = 0; i < rowsCount; i++) {
+            for (int j = 0; j < columnsCount; j++) {
+                if (!minesFieldCells[i][j].isMined()) {
+                    CellCoordinates[] extremeCellsCoordinates = getExtremeNeighbourCellsCoordinates(i, j);
+
+                    int cellMinesCount = 0;
+
+                    for (int k = extremeCellsCoordinates[0].rowNumber; k <= extremeCellsCoordinates[1].rowNumber; k++) {
+                        for (int l = extremeCellsCoordinates[0].columnNumber; l <= extremeCellsCoordinates[1].columnNumber; l++) {
+                            if (!(k == i && l == j) && minesFieldCells[k][l].isMined()) {
+                                cellMinesCount++;
+                            }
+                        }
+                    }
+
+                    minesFieldCells[i][j].setNeighboursMinesCount(cellMinesCount);
+                }
+            }
+        }
+    }
+
     private void checkGameState() {
         if (gameState == GameState.IN_PROGRESS) {
             if (needToOpenCellsCount > 0) {
@@ -419,7 +438,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
 
         if (gameState == GameState.IS_WON && timer.getSecondsCount() < maximumSecondsCount
                 && highScoresTable.isScoreNeedToAdd(timer.getSecondsCount())) {
-            for (final MinesweeperSubscriber subscriber : subscribers) {
+            for (MinesweeperSubscriber subscriber : subscribers) {
                 assert subscriber != null;
 
                 subscriber.enterGamerName();
@@ -447,7 +466,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
     }
 
     protected void notifySubscribersModelChanged() {
-        for (final MinesweeperSubscriber subscriber : subscribers) {
+        for (MinesweeperSubscriber subscriber : subscribers) {
             notifySubscriberModelChanged(subscriber);
         }
     }

@@ -24,47 +24,32 @@ public class MinesweeperImages {
     public MinesweeperImages(int cellButtonSize, int gameStateButtonSize) {
         digitsImagesArray = new ImageIcon[9];
 
-        BufferedImage imageIcon;
-
         try {
-            String imagesPath = "Minesweeper/src/ru/academits/smolenskaya/minesweeper/resources/images/";
             for (int i = 0; i <= 8; i++) {
-                imageIcon = ImageIO.read(new File(imagesPath + i + ".png"));
-                digitsImagesArray[i] = new ImageIcon(imageIcon.getScaledInstance(cellButtonSize, cellButtonSize, Image.SCALE_SMOOTH));
+                digitsImagesArray[i] = getImageFromFile(i + ".png", cellButtonSize);
             }
 
-            imageIcon = ImageIO.read(new File(imagesPath + "closed.png"));
-            closedCellImage = new ImageIcon(imageIcon.getScaledInstance(cellButtonSize, cellButtonSize, Image.SCALE_SMOOTH));
+            closedCellImage = getImageFromFile("closed.png", cellButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "detonatedMine.png"));
-            detonatedMineImage = new ImageIcon(imageIcon.getScaledInstance(cellButtonSize, cellButtonSize, Image.SCALE_SMOOTH));
+            detonatedMineImage = getImageFromFile("detonatedMine.png", cellButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "flag.png"));
-            flagImage = new ImageIcon(imageIcon.getScaledInstance(cellButtonSize, cellButtonSize, Image.SCALE_SMOOTH));
+            flagImage = getImageFromFile("flag.png", cellButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "mine.png"));
-            mineImage = new ImageIcon(imageIcon.getScaledInstance(cellButtonSize, cellButtonSize, Image.SCALE_SMOOTH));
+            mineImage = getImageFromFile("mine.png", cellButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "mistakenMine.png"));
-            mistakenMineImage = new ImageIcon(imageIcon.getScaledInstance(cellButtonSize, cellButtonSize, Image.SCALE_SMOOTH));
+            mistakenMineImage = getImageFromFile("mistakenMine.png", cellButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "question.png"));
-            questionImage = new ImageIcon(imageIcon.getScaledInstance(cellButtonSize, cellButtonSize, Image.SCALE_SMOOTH));
+            questionImage = getImageFromFile("question.png", cellButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "newGame.png"));
-            newGameImage = new ImageIcon(imageIcon.getScaledInstance(gameStateButtonSize, gameStateButtonSize, Image.SCALE_SMOOTH));
+            newGameImage = getImageFromFile("newGame.png", gameStateButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "wonGame.png"));
-            wonGameImage = new ImageIcon(imageIcon.getScaledInstance(gameStateButtonSize, gameStateButtonSize, Image.SCALE_SMOOTH));
+            wonGameImage = getImageFromFile("wonGame.png", gameStateButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "failedGame.png"));
-            failedGameImage = new ImageIcon(imageIcon.getScaledInstance(gameStateButtonSize, gameStateButtonSize, Image.SCALE_SMOOTH));
+            failedGameImage = getImageFromFile("failedGame.png", gameStateButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "gamer.png"));
-            gamerImage = new ImageIcon(imageIcon.getScaledInstance(gameStateButtonSize, gameStateButtonSize, Image.SCALE_SMOOTH));
+            gamerImage = getImageFromFile("gamer.png", gameStateButtonSize);
 
-            imageIcon = ImageIO.read(new File(imagesPath + "about.png"));
-            aboutImage = new ImageIcon(imageIcon.getScaledInstance(gameStateButtonSize, gameStateButtonSize, Image.SCALE_SMOOTH));
+            aboutImage = getImageFromFile("about.png", gameStateButtonSize);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "An error occurred when reading files with images: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -120,5 +105,13 @@ public class MinesweeperImages {
 
     public ImageIcon getAboutImage() {
         return aboutImage;
+    }
+
+    private ImageIcon getImageFromFile(String imageFileName, int size) throws IOException {
+        String path = "Minesweeper/src/ru/academits/smolenskaya/minesweeper/resources/images/";
+
+        BufferedImage imageIcon = ImageIO.read(new File(path + imageFileName));
+
+        return new ImageIcon(imageIcon.getScaledInstance(size, size, Image.SCALE_SMOOTH));
     }
 }

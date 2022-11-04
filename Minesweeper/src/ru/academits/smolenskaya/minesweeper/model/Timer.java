@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 class Timer {
     private int secondsCount;
-    ScheduledExecutorService scheduler;
+    private ScheduledExecutorService scheduler;
     private final int maximumSecondsCount;
     private final Collection<TimerSubscriber> subscribers = new CopyOnWriteArrayList<>();
 
@@ -43,7 +43,7 @@ class Timer {
     }
 
     protected void notifySubscribers() {
-        for (final TimerSubscriber subscriber : subscribers) {
+        for (TimerSubscriber subscriber : subscribers) {
             notifySubscriber(subscriber);
         }
     }

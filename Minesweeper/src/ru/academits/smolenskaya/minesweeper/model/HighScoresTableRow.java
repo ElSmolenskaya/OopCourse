@@ -1,11 +1,12 @@
 package ru.academits.smolenskaya.minesweeper.model;
 
-public class HighScoresTableRow {
+class HighScoresTableRow {
     private final String gamerName;
     private final int score;
-    String defaultName = "Unknown user";
 
     public HighScoresTableRow(String name, int score) {
+        String defaultName = "Unknown user";
+
         if (name == null || name.trim().length() == 0) {
             this.gamerName = defaultName;
         } else {

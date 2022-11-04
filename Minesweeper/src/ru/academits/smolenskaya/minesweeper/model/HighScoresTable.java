@@ -5,9 +5,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class HighScoresTable {
+class HighScoresTable {
     private final int maximalRowsCount = 10;
-    char rowComponentsSeparator = ';';
+    private final char rowComponentsSeparator = ';';
     private final String path;
 
     public HighScoresTable(int level) {
