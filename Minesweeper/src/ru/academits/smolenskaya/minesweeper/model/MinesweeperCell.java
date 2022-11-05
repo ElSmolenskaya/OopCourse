@@ -8,8 +8,8 @@ class MinesweeperCell {
         CLOSED, MARKED_AS_MINED, MARKED_AS_IN_QUESTION, OPENED, MISTAKEN_MINE, MINE_DETONATED
     }
 
-    public MinesweeperCell(int minesCount) {
-        this.neighboursMinesCount = minesCount;
+    public MinesweeperCell(int neighboursMinesCount) {
+        this.neighboursMinesCount = neighboursMinesCount;
 
         status = Status.CLOSED;
     }
@@ -18,8 +18,8 @@ class MinesweeperCell {
         return neighboursMinesCount;
     }
 
-    public void setNeighboursMinesCount(int neighboursMinesCount) {
-        this.neighboursMinesCount = neighboursMinesCount;
+    public void setNeighboursMinesCount(int minesCount) {
+        neighboursMinesCount = minesCount;
     }
 
     public Status getStatus() {

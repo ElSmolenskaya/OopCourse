@@ -6,9 +6,9 @@ import ru.academits.smolenskaya.temperature_converter.view.TemperatureConverterF
 public class Main {
     public static void main(String[] args) {
         try {
-            TemperatureScale[] temperatureScales = {new CelsiusScale(), new KelvinScale(), new FahrenheitScale()};
-
             TemperatureConverterModel temperatureConverterModel = new TemperatureConverterModel();
+
+            TemperatureScale[] temperatureScales = temperatureConverterModel.getTemperatureScales();
 
             //noinspection unused
             TemperatureConverterFrame temperatureFrame = new TemperatureConverterFrame(temperatureConverterModel, temperatureScales);

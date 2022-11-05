@@ -3,11 +3,6 @@ package ru.academits.smolenskaya.temperature_converter.model;
 public class FahrenheitScale implements TemperatureScale {
     private static final int CELSIUS_FAHRENHEIT_DIFFERENCE = 32;
     private static final double CELSIUS_FAHRENHEIT_COEFFICIENT = 1.8;
-    private final String scaleName;
-
-    public FahrenheitScale() {
-        scaleName = "Fahrenheit";
-    }
 
     @Override
     public double getDegreesInCelsiusScale(double degrees) {
@@ -21,6 +16,6 @@ public class FahrenheitScale implements TemperatureScale {
 
     @Override
     public String toString() {
-        return scaleName;
+        return "Fahrenheit";
     }
 }

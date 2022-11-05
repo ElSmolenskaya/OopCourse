@@ -8,9 +8,9 @@ class HighScoresTableRow {
         String defaultName = "Unknown user";
 
         if (name == null || name.trim().length() == 0) {
-            this.gamerName = defaultName;
+            gamerName = defaultName;
         } else {
-            this.gamerName = name.trim();
+            gamerName = name.trim();
         }
 
         this.score = score;

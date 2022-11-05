@@ -2,11 +2,6 @@ package ru.academits.smolenskaya.temperature_converter.model;
 
 public class KelvinScale implements TemperatureScale {
     private static final double CELSIUS_KELVIN_DIFFERENCE = 273.15;
-    private final String scaleName;
-
-    public KelvinScale() {
-        scaleName = "Kelvin";
-    }
 
     @Override
     public double getDegreesInCelsiusScale(double degrees) {
@@ -20,6 +15,6 @@ public class KelvinScale implements TemperatureScale {
 
     @Override
     public String toString() {
-        return scaleName;
+        return "Kelvin";
     }
 }

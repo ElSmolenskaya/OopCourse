@@ -9,9 +9,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Objects;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class TemperatureConverterFrame {
@@ -38,18 +35,6 @@ public class TemperatureConverterFrame {
         }
 
         return false;
-    }
-
-    private static String getFormattedNumberString(String number) {
-        BigDecimal bigDecimal = new BigDecimal(number);
-
-        String tempNumber = String.valueOf(bigDecimal.setScale(6, RoundingMode.HALF_UP).doubleValue());
-
-        if (tempNumber.length() > 2 && Objects.equals(tempNumber.substring(tempNumber.length() - 2), ".0")) {
-            tempNumber = tempNumber.substring(0, tempNumber.length() - 2);
-        }
-
-        return tempNumber;
     }
 
     private void run() {
@@ -124,19 +109,15 @@ public class TemperatureConverterFrame {
         temperatureConverterFrame.add(degreesToTextField, gridBagConstraints);
 
         conversingButton.addActionListener(e -> {
-            degreesFromTextField.setText(degreesFromTextField.getText().replace(',', '.'));
-
-            double degreesFrom = Double.parseDouble(degreesFromTextField.getText());
-
-            degreesFromTextField.setText(getFormattedNumberString(degreesFromTextField.getText()));
-
-            TemperatureScale scaleFrom = temperatureScales[scaleFromComboBox.getSelectedIndex()];
-            TemperatureScale scaleTo = temperatureScales[scaleToComboBox.getSelectedIndex()];
-
-            double degreesTo = temperatureConverter.getTemperature(scaleFrom, scaleTo, degreesFrom);
-
             try {
-                degreesToTextField.setText(getFormattedNumberString(String.valueOf(degreesTo)));
+                double degreesFrom = Double.parseDouble(degreesFromTextField.getText().replace(',', '.'));
+
+                TemperatureScale scaleFrom = temperatureScales[scaleFromComboBox.getSelectedIndex()];
+                TemperatureScale scaleTo = temperatureScales[scaleToComboBox.getSelectedIndex()];
+
+                double degreesTo = temperatureConverter.getTemperature(scaleFrom, scaleTo, degreesFrom);
+
+                degreesToTextField.setText(String.valueOf(degreesTo));
             } catch (NumberFormatException exception) {
                 JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "Temperature value to convert" +
                         System.lineSeparator() + "contains incorrect symbols!", "Error", JOptionPane.ERROR_MESSAGE);
