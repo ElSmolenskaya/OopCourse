@@ -95,7 +95,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
             return;
         }
 
-        if (minesFieldCells[rowNumber][columnNumber].getNeighboursMinesCount() < 0) {
+        if (minesFieldCells[rowNumber][columnNumber].isMined()) {
             minesFieldCells[rowNumber][columnNumber].setStatus(MinesweeperCell.Status.MINE_DETONATED);
 
             gameState = GameState.IS_FAILED;
@@ -122,7 +122,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
 
                         needToOpenCellsCount--;
 
-                        if (minesFieldCells[i][j].getNeighboursMinesCount() == 0) {
+                        if (!minesFieldCells[i][j].isMined() && minesFieldCells[i][j].getNeighboursMinesCount() == 0) {
                             stack.addLast(new CellCoordinates(i, j));
                         }
                     }
@@ -142,7 +142,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
         checkCellIndexes(rowNumber, columnNumber);
 
         if (minesFieldCells[rowNumber][columnNumber].getStatus() != MinesweeperCell.Status.OPENED ||
-                minesFieldCells[rowNumber][columnNumber].getNeighboursMinesCount() < 1) {
+                minesFieldCells[rowNumber][columnNumber].getNeighboursMinesCount() == 0) {
             return;
         }
 
@@ -205,6 +205,13 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
         checkCellIndexes(rowNumber, columnNumber);
 
         return minesFieldCells[rowNumber][columnNumber].getNeighboursMinesCount();
+    }
+
+    @Override
+    public boolean isCellMined(int rowNumber, int columnNumber) {
+        checkCellIndexes(rowNumber, columnNumber);
+
+        return minesFieldCells[rowNumber][columnNumber].isMined();
     }
 
     @Override
@@ -292,10 +299,9 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
     }
 
     @Override
-    public Object[][] getHighScoresTable() {
+    public LinkedList<HighScoresTableRow> getHighScoresTable() {
         return highScoresTable.getRows();
     }
-
 
     @Override
     public void addScoreToHighScoresTable(String gamerName) {
@@ -391,7 +397,7 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
 
                     for (int k = extremeCellsCoordinates[0].rowNumber; k <= extremeCellsCoordinates[1].rowNumber; k++) {
                         for (int l = extremeCellsCoordinates[0].columnNumber; l <= extremeCellsCoordinates[1].columnNumber; l++) {
-                            if (!(k == i && l == j) && minesFieldCells[k][l].isMined()) {
+                            if ((k != i || l != j) && minesFieldCells[k][l].isMined()) {
                                 cellMinesCount++;
                             }
                         }
@@ -412,6 +418,8 @@ public class MinesweeperModel implements Minesweeper, TimerSubscriber {
             }
 
             gameState = GameState.IS_WON;
+
+            markedAsMinedCellsCount = sizeConstantsByLevel[levelIndex].minesCount;
 
             timer.stop();
         }

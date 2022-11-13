@@ -1,6 +1,7 @@
 package ru.academits.smolenskaya.minesweeper.model;
 
 class MinesweeperCell {
+    private boolean isMined;
     private int neighboursMinesCount;
     private Status status;
 
@@ -31,10 +32,10 @@ class MinesweeperCell {
     }
 
     public void setMine() {
-        neighboursMinesCount = -1;
+        isMined = true;
     }
 
     public boolean isMined() {
-        return neighboursMinesCount == -1;
+        return isMined;
     }
 }

@@ -1,6 +1,6 @@
 package ru.academits.smolenskaya.minesweeper.model;
 
-class HighScoresTableRow {
+public class HighScoresTableRow {
     private final String gamerName;
     private final int score;
 

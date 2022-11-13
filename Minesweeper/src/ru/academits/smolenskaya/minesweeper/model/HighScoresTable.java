@@ -65,20 +65,7 @@ class HighScoresTable {
         }
     }
 
-    public Object[][] getRows() {
-        LinkedList<HighScoresTableRow> rows = getRowsFromFile();
-
-        if (rows.size() == 0) {
-            return null;
-        }
-
-        Object[][] objectsArray = new Object[rows.size()][2];
-
-        for (int i = 0; i < rows.size(); i++) {
-            objectsArray[i][0] = rows.get(i).getGamerName();
-            objectsArray[i][1] = rows.get(i).getScore();
-        }
-
-        return objectsArray;
+    public LinkedList<HighScoresTableRow> getRows() {
+        return getRowsFromFile();
     }
 }

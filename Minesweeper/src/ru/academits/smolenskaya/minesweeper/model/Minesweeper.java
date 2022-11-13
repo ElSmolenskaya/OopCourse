@@ -1,5 +1,7 @@
 package ru.academits.smolenskaya.minesweeper.model;
 
+import java.util.LinkedList;
+
 public interface Minesweeper {
     int getRowsCount();
 
@@ -8,6 +10,8 @@ public interface Minesweeper {
     MinesweeperModel.GameState getGameState();
 
     int getCellNeighboursMinesCount(int rowNumber, int columnNumber);
+
+    boolean isCellMined(int rowNumber, int columnNumber);
 
     void openCell(int rowNumber, int columnNumber);
 
@@ -33,7 +37,7 @@ public interface Minesweeper {
 
     int getTimerSecondsCount();
 
-    Object[][] getHighScoresTable();
+    LinkedList<HighScoresTableRow> getHighScoresTable();
 
     void addScoreToHighScoresTable(String gamerName);
 

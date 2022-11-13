@@ -1,6 +1,7 @@
 package ru.academits.smolenskaya.minesweeper.gui;
 
 import ru.academits.smolenskaya.minesweeper.controller.MinesweeperController;
+import ru.academits.smolenskaya.minesweeper.model.HighScoresTableRow;
 import ru.academits.smolenskaya.minesweeper.model.Minesweeper;
 import ru.academits.smolenskaya.minesweeper.model.MinesweeperSubscriber;
 
@@ -9,6 +10,7 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class MinesweeperFrame implements MinesweeperSubscriber {
@@ -179,13 +181,7 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
         highScoresMenuItem.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                Object[][] highScoresList = minesweeperModel.getHighScoresTable();
-
-                if (highScoresList == null) {
-                    showEmptyHighScoresTableDialog();
-                } else {
-                    showHighScoresTableDialog(highScoresList);
-                }
+                showHighScoresTableDialog(minesweeperModel.getHighScoresTable());
             }
         });
 
@@ -332,12 +328,10 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
             for (int j = 0; j < columnsCount; j++) {
                 switch (minesweeperModel.getCellStatus(i, j)) {
                     case OPENED -> {
-                        int minesCount = minesweeperModel.getCellNeighboursMinesCount(i, j);
-
-                        if (minesCount < 0) {
+                        if (minesweeperModel.isCellMined(i, j)) {
                             buttonsArray[i][j].setIcon(images.getMineImage());
                         } else {
-                            buttonsArray[i][j].setIcon(images.getDigitImage(minesCount));
+                            buttonsArray[i][j].setIcon(images.getDigitImage(minesweeperModel.getCellNeighboursMinesCount(i, j)));
                         }
                     }
                     case CLOSED -> buttonsArray[i][j].setIcon(images.getClosedCellImage());
@@ -396,20 +390,33 @@ public class MinesweeperFrame implements MinesweeperSubscriber {
         }
     }
 
-    private void showEmptyHighScoresTableDialog() {
-        JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "There is no any score record. Be the first!",
-                "High scores", JOptionPane.INFORMATION_MESSAGE, images.getGamerImage());
-    }
-
     private void showAboutDialog() {
         JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), minesweeperModel.getAboutProgramInformation(),
                 "About", JOptionPane.INFORMATION_MESSAGE, images.getAboutImage());
     }
 
-    private void showHighScoresTableDialog(Object[][] data) {
+    private void showHighScoresTableDialog(LinkedList<HighScoresTableRow> highScoresTable) {
         String[] columnsHeaders = new String[]{"Name", "Score"};
 
-        JTable table = new JTable(data, columnsHeaders) {
+        if (highScoresTable.isEmpty()) {
+            JOptionPane.showMessageDialog(new JPanel(new FlowLayout()), "There is no any score record. Be the first!",
+                    "High scores", JOptionPane.INFORMATION_MESSAGE, images.getGamerImage());
+
+            return;
+        }
+
+        Object[][] highScoresArray = new Object[highScoresTable.size()][2];
+
+        int i = 0;
+
+        for (HighScoresTableRow row : highScoresTable) {
+            highScoresArray[i][0] = row.getGamerName();
+            highScoresArray[i][1] = row.getScore();
+
+            ++i;
+        }
+
+        JTable table = new JTable(highScoresArray, columnsHeaders) {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
